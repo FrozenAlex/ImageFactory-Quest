@@ -7,14 +7,13 @@
 #include "Presenters/Presenter.hpp"
 #include "HMUI/CurvedCanvasSettingsHelper.hpp"
 #include "HMUI/Touchable.hpp"
-#include "questui/shared/BeatSaberUI.hpp"
 #include "UnityEngine/Rect.hpp"
 #include "UnityEngine/RectOffset.hpp"
 #include "UnityEngine/Graphics.hpp"
+#include "UnityEngine/UI/ContentSizeFitter.hpp"
 
 using namespace UnityEngine::UI;
 using namespace UnityEngine;
-using namespace QuestUI;
 using namespace HMUI;
 
 #define SetPreferredSize(identifier, width, height)                                         \
@@ -40,7 +39,6 @@ using namespace HMUI;
 DEFINE_TYPE(ImageFactory::UI, ImageCreatorViewController);
 
 namespace ImageFactory::UI {
-
     void ImageCreatorViewController::DidActivate(bool firstActivation,
                                          bool addedToHierarchy,
                                          bool screenSystemEnabling) {
@@ -55,65 +53,66 @@ namespace ImageFactory::UI {
             
             image->Update(true);
 
-            VerticalLayoutGroup* vertical = BeatSaberUI::CreateVerticalLayoutGroup(get_transform());
+            VerticalLayoutGroup* vertical = BSML::Lite::CreateVerticalLayoutGroup(get_transform());
             SetFits(vertical, ContentSizeFitter::FitMode::PreferredSize, ContentSizeFitter::FitMode::PreferredSize);
 
-            HorizontalLayoutGroup* horiz = BeatSaberUI::CreateHorizontalLayoutGroup(vertical->get_transform());
+            HorizontalLayoutGroup* horiz = BSML::Lite::CreateHorizontalLayoutGroup(vertical->get_transform());
             SetFits(horiz, ContentSizeFitter::FitMode::PreferredSize, ContentSizeFitter::FitMode::PreferredSize);
             SetPreferredSize(horiz, 94, 8);
 
-            BeatSaberUI::CreateStringSetting(horiz->get_transform(), "Name", image->name,
+            BSML::Lite::CreateStringSetting(horiz->get_transform(), "Name", image->name,
                 [=](StringW s) { 
                     image->name = static_cast<std::string>(s);
             });
 
             
-            VerticalLayoutGroup* settingsVert = BeatSaberUI::CreateVerticalLayoutGroup(vertical->get_transform());
+            VerticalLayoutGroup* settingsVert = BSML::Lite::CreateVerticalLayoutGroup(vertical->get_transform());
             SetFits(settingsVert, ContentSizeFitter::FitMode::PreferredSize, ContentSizeFitter::FitMode::PreferredSize);
             SetWidth(horiz, 90);
             
-            BeatSaberUI::CreateToggle(settingsVert->get_transform(), "Enabled", image->enabled, 
+            BSML::Lite::CreateToggle(settingsVert->get_transform(), "Enabled", image->enabled, 
                 [=](bool b) {
                     image->enabled = b;
                     image->Update(true);
             });
 
-            BeatSaberUI::CreateIncrementSetting(settingsVert->get_transform(), "Scale X", 2, 0.1f, image->scaleX,
+            BSML::Lite::CreateIncrementSetting(settingsVert->get_transform(), "Scale X", 2, 0.1f, image->scaleX,
                 [=](float f) {
                     image->scaleX = f;
                     image->Update(true);
             });
 
-            BeatSaberUI::CreateIncrementSetting(settingsVert->get_transform(), "Scale Y", 2, 0.1f, image->scaleY,
+            BSML::Lite::CreateIncrementSetting(settingsVert->get_transform(), "Scale Y", 2, 0.1f, image->scaleY,
                 [=](float f) {
                     image->scaleY = f;
                     image->Update(true);
             });
 
-            VerticalLayoutGroup* optionsVert = BeatSaberUI::CreateVerticalLayoutGroup(vertical->get_transform());
+            VerticalLayoutGroup* optionsVert = BSML::Lite::CreateVerticalLayoutGroup(vertical->get_transform());
             optionsVert->set_padding(RectOffset::New_ctor(-2, -20, -2, -2));
-            optionsVert->set_childAlignment(TMPro::TextAlignmentOptions::Center);
+            optionsVert->set_childAlignment(UnityEngine::TextAnchor::MiddleCenter);
 
             SetFits(optionsVert, ContentSizeFitter::FitMode::PreferredSize, ContentSizeFitter::FitMode::PreferredSize);
             SetPreferredSize(optionsVert, 90, 34);
 
             Backgroundable* bg = optionsVert->get_gameObject()->AddComponent<Backgroundable*>();
-            bg->ApplyBackgroundWithAlpha("round-rect-panel", 0.8f);
+            bg->ApplyBackground("round-rect-panel");
+            bg->ApplyAlpha(0.8f);
 
-            std::vector<StringW> presOptions;
+            std::vector<string_view> presOptions;
 
             for (int i = 0; i < PresenterManager::PRESENTERS.size(); i++) {
                 presOptions.push_back(PresenterManager::PRESENTERS.at(i));
             }
 
-            VerticalLayoutGroup* list = BeatSaberUI::CreateVerticalLayoutGroup(get_transform());
+            VerticalLayoutGroup* list = BSML::Lite::CreateVerticalLayoutGroup(get_transform());
             list->get_rectTransform()->set_anchoredPosition({0.0f, -20.0f});
             list->set_spacing(2.0f);
             list->set_childForceExpandHeight(false);
             SetFits(list, ContentSizeFitter::FitMode::PreferredSize, ContentSizeFitter::FitMode::PreferredSize);
             SetPreferredSize(list, 85, 40);
 
-            auto dropDown = BeatSaberUI::CreateDropdown(list->get_transform(), "Presentation Options", image->presentationoption, presOptions,
+            auto dropDown = BSML::Lite::CreateDropdown(list->get_transform(), "Presentation Options", image->presentationoption, presOptions,
                 [=](StringW s) {
                     image->presentationoption = static_cast<std::string>(s);
 
@@ -124,16 +123,16 @@ namespace ImageFactory::UI {
             presenter = PresenterManager::GetPresenter(image->presentationoption);
             options = presenter->GetUIElements(list->get_transform(), image);
 
-            ImageFactoryFlowCoordinator* flow = Object::FindObjectsOfType<ImageFactoryFlowCoordinator*>().First();
+            ImageFactoryFlowCoordinator* flow = Object::FindObjectsOfType<ImageFactoryFlowCoordinator*>()->First();
 
-            auto cancelButton = BeatSaberUI::CreateUIButton(this->get_transform(), "", {-22.0f, -38.0f}, {40.0f, 8.0f}, 
+            auto cancelButton = BSML::Lite::CreateUIButton(this->get_transform(), "", {-22.0f, -38.0f}, {40.0f, 8.0f}, 
                 [=]() {
                     flow->ResetViews();
             });
 
-            BeatSaberUI::CreateText(cancelButton->get_transform(), "CANCEL")->set_alignment(TMPro::TextAlignmentOptions::Center);
+            BSML::Lite::CreateText(cancelButton->get_transform(), "CANCEL")->set_alignment(TMPro::TextAlignmentOptions::Center);
 
-            auto saveButton = BeatSaberUI::CreateUIButton(this->get_transform(), "", {22.0f, -38.0f}, {40.0f, 8.0f},
+            auto saveButton = BSML::Lite::CreateUIButton(this->get_transform(), "", {22.0f, -38.0f}, {40.0f, 8.0f},
                 [=]() {
                     GameObject* screen = image->screen;
                     auto localPosition = screen->get_transform()->get_localPosition();
@@ -166,7 +165,7 @@ namespace ImageFactory::UI {
                     }
 
                     if (text) {
-                        text->SetText(image->name);
+                        text->set_text(image->name);
 
                         if (!image->enabled) {
                             text->set_color(Color::get_red());
@@ -178,7 +177,7 @@ namespace ImageFactory::UI {
                     flow->ResetViews();
             });
 
-            BeatSaberUI::CreateText(saveButton->get_transform(), "SAVE")->set_alignment(TMPro::TextAlignmentOptions::Center);
+            BSML::Lite::CreateText(saveButton->get_transform(), "SAVE")->set_alignment(TMPro::TextAlignmentOptions::Center);
         }
     }
 
@@ -220,7 +219,7 @@ namespace ImageFactory::UI {
 
         GameObject* obj = GameObject::New_ctor(s);
         IFImage* image = obj->AddComponent<IFImage*>();
-        image->ctor(BeatSaberUI::FileToSprite(static_cast<std::string>(s)), s);
+        image->ctor(BSML::Lite::FileToSprite(static_cast<std::string>(s)), s);
 
         this->image = image;
 

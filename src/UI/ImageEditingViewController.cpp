@@ -1,36 +1,32 @@
 #include "UI/ImageEditingViewController.hpp"
 
-#include "Helpers/utilities.hpp"
-#include "BSML/Animations/AnimationStateUpdater.hpp"
+#include "bsml/shared/BSML/Animations/AnimationStateUpdater.hpp"
 #include "UI/ImageFactoryFlowCoordinator.hpp"
 #include "Utils/UIUtils.hpp"
 #include "Utils/FileUtils.hpp"
 #include "Utils/StringUtils.hpp"
 #include "HMUI/Touchable.hpp"
 #include "HMUI/Touchable.hpp"
-#include "questui/shared/BeatSaberUI.hpp"
 #include "Presenters/PresenterManager.hpp"
 #include "UnityEngine/Rect.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "UnityEngine/WaitForSeconds.hpp"
-#include "GlobalNamespace/SharedCoroutineStarter.hpp"
+#include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
 #include "beatsaber-hook/shared/utils/il2cpp-functions.hpp"
 #include "beatsaber-hook/shared/utils/typedefs-string.hpp"
-#include "HMUI/ViewController_AnimationDirection.hpp"
-#include "HMUI/ViewController_AnimationType.hpp"
+#include "HMUI/ViewController.hpp"
 #include "PluginConfig.hpp"
-#include "Sprites.hpp"
 #include "main.hpp"
+#include "bsml/shared/BSML-Lite/Creation/Text.hpp"
+#include "bsml/shared/BSML-Lite/Creation/Image.hpp"
+#include "bsml/shared/BSML-Lite/Creation/Layout.hpp"
 
 DEFINE_TYPE(ImageFactory::UI, ImageEditingViewController);
 
 using namespace GlobalNamespace;
 using namespace UnityEngine::UI;
 using namespace UnityEngine;
-using namespace QuestUI;
 using namespace HMUI;
-
-#define StartCoroutine(method) GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::CoroutineHelper::New(method))
 
 #define SetPreferredSize(identifier, width, height)                                         \
     auto layout##identifier = identifier->get_gameObject()->GetComponent<LayoutElement*>(); \
@@ -48,9 +44,9 @@ namespace ImageFactory::UI {
 
             get_gameObject()->AddComponent<Touchable*>();
 
-            auto bg = UIUtils::CreateHeader(BeatSaberUI::CreateHorizontalLayoutGroup(get_transform())->get_transform(), "New Image");
+            auto bg = UIUtils::CreateHeader(BSML::Lite::CreateHorizontalLayoutGroup(get_transform())->get_transform(), "New Image");
 
-            auto listBar = BeatSaberUI::CreateHorizontalLayoutGroup(get_transform());
+            auto listBar = BSML::Lite::CreateHorizontalLayoutGroup(get_transform());
         
             auto listBarElement = listBar->GetComponent<LayoutElement*>();
             listBarElement->set_preferredWidth(20);
@@ -58,9 +54,13 @@ namespace ImageFactory::UI {
 
             containerParent = listBar->get_transform();
     
-            container = BeatSaberUI::CreateScrollableSettingsContainer(containerParent);
+            container = BSML::Lite::CreateScrollableSettingsContainer(containerParent);
 
-            StartCoroutine(SetupListElements(container->get_transform()));
+            StartCoroutine(
+                custom_types::Helpers::CoroutineHelper::New(
+                    SetupListElements(container->get_transform())
+                )
+            );
         } else {
             if (loadingControl) {
                 loadingControl->get_gameObject()->set_active(false);
@@ -70,13 +70,13 @@ namespace ImageFactory::UI {
 
     custom_types::Helpers::Coroutine ImageEditingViewController::SetupListElements(Transform* list){
         if (loadingControl) {
-            loadingControl->refreshButton->get_gameObject()->SetActive(false);
-            loadingControl->refreshText->get_gameObject()->SetActive(false);
+            loadingControl->____refreshButton->get_gameObject()->SetActive(false);
+            loadingControl->____refreshText->get_gameObject()->SetActive(false);
         }
         
         GameObject::Destroy(loadingControl);
         
-        GameObject* existingLoadinControl = Resources::FindObjectsOfTypeAll<LoadingControl*>()->values[0]->get_gameObject();
+        GameObject* existingLoadinControl = Resources::FindObjectsOfTypeAll<LoadingControl*>()->_values[0]->get_gameObject();
         GameObject* loadinControlGameObject = UnityEngine::GameObject::Instantiate(existingLoadinControl, get_transform());
 
         auto loadingControlTransform = loadinControlGameObject->get_transform();
@@ -86,8 +86,8 @@ namespace ImageFactory::UI {
 
         ConstString load = "Loading Images...";
 
-        loadingControl->refreshText->set_text(load);
-        loadingControl->loadingText->set_text(load);
+        loadingControl->____refreshText->set_text(load);
+        loadingControl->____loadingText->set_text(load);
         loadingControl->ShowLoading(load);
 
         list->get_gameObject()->set_active(false);
@@ -143,16 +143,16 @@ namespace ImageFactory::UI {
             enabled = configValue["enabled"].GetBool();
         }
 
-        HorizontalLayoutGroup* levelBarLayout = BeatSaberUI::CreateHorizontalLayoutGroup(list);
+        HorizontalLayoutGroup* levelBarLayout = BSML::Lite::CreateHorizontalLayoutGroup(list);
         levelBarLayout->set_childControlWidth(false);
 
         LayoutElement* levelBarLayoutElement = levelBarLayout->GetComponent<LayoutElement*>();
         levelBarLayoutElement->set_minHeight(10.0f);
         levelBarLayoutElement->set_minWidth(20.0f);
 
-        Sprite* sprite = BeatSaberUI::FileToSprite(path);
+        Sprite* sprite = BSML::Lite::FileToSprite(path);
 
-        auto image = BeatSaberUI::CreateImage(levelBarLayoutElement->get_transform(), sprite, {2.0f, 0.0f}, {10.0f, 2.0f});
+        auto image = BSML::Lite::CreateImage(levelBarLayoutElement->get_transform(), sprite, {2.0f, 0.0f}, {10.0f, 2.0f});
 
         SetPreferredSize(image, 10.0f, 2.0f);
 
@@ -164,7 +164,7 @@ namespace ImageFactory::UI {
         imgElem->set_preferredHeight(2.0f);
         imgElem->set_preferredWidth(10.0f);
 
-        TMPro::TextMeshProUGUI* text = BeatSaberUI::CreateText(levelBarLayoutElement->get_transform(), name, true);
+        TMPro::TextMeshProUGUI* text = BSML::Lite::CreateText(levelBarLayoutElement->get_transform(), name, true);
         if (!enabled) {
             text->set_color(Color::get_red());
         } else {
@@ -174,7 +174,7 @@ namespace ImageFactory::UI {
         levelBarLayoutElement->set_minWidth(1.0f);
         levelBarLayoutElement->set_minHeight(1.0f);
 
-        Button* deleteButton = BeatSaberUI::CreateUIButton(levelBarLayoutElement->get_transform(), "", {0.0f, 0.0f}, {12.0f, 9.0f}, 
+        Button* deleteButton = BSML::Lite::CreateUIButton(levelBarLayoutElement->get_transform(), "", {0.0f, 0.0f}, {12.0f, 9.0f}, 
             [=]() {
                 for (std::pair<IFImage*, std::string> pair : *PresenterManager::MAP) {
                     if (pair.first->internalName.starts_with(fileName)) {
@@ -185,22 +185,22 @@ namespace ImageFactory::UI {
                 }
             });
 
-        auto deleteText = BeatSaberUI::CreateText(
+        auto deleteText = BSML::Lite::CreateText(
             deleteButton->get_transform(), "X");
         deleteText->set_alignment(TMPro::TextAlignmentOptions::Center);
         deleteText->set_color(Color(1.0f, 0.0f, 0.0f, 1.0f));
 
-        Button* editButton = BeatSaberUI::CreateUIButton(levelBarLayoutElement->get_transform(), "", {0.0f, 0.0f}, {12.0f, 9.0f}, 
+        Button* editButton = BSML::Lite::CreateUIButton(levelBarLayoutElement->get_transform(), "", {0.0f, 0.0f}, {12.0f, 9.0f}, 
             [=]() {
                 for (std::pair<IFImage*, std::string> pair : *PresenterManager::MAP) {
                     if (pair.first->internalName.starts_with(fileName)) {
-                        Resources::FindObjectsOfTypeAll<ImageFactoryFlowCoordinator*>().First()->EditImage(pair.first, text);
+                        Resources::FindObjectsOfTypeAll<ImageFactoryFlowCoordinator*>()->First()->EditImage(pair.first, text);
                         break;
                     }
                 }
             });
 
-        auto editText = BeatSaberUI::CreateText(editButton->get_transform(), "<-");
+        auto editText = BSML::Lite::CreateText(editButton->get_transform(), "<-");
         editText->set_alignment(TMPro::TextAlignmentOptions::Center);
 
         levelBarLayout->get_gameObject()->set_active(true);

@@ -3,17 +3,13 @@
 #include "Utils/StringUtils.hpp"
 #include "Presenters/PresenterManager.hpp"
 #include "Presenters/LastNotePresenter.hpp"
-#include "questui/shared/BeatSaberUI.hpp"
 #include "GlobalNamespace/StandardLevelDetailView.hpp"
-#include "GlobalNamespace/IDifficultyBeatmap.hpp"
-#include "GlobalNamespace/IPreviewBeatmapLevel.hpp"
 #include "GlobalNamespace/BeatmapData.hpp"
 #include "GlobalNamespace/BeatmapDataItem.hpp"
 #include "GlobalNamespace/NoteData.hpp"
 #include "System/Threading/Tasks/Task_1.hpp"
 #include "GlobalNamespace/NoteController.hpp"
-
-using namespace QuestUI;
+#include "logging.hpp"
 
 #define StartCoroutine(method) GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::CoroutineHelper::New(method))
 
@@ -22,7 +18,7 @@ namespace ImageFactory::Presenters {
     std::vector<GameObject*> LastNotePresenter::GetUIElements(Transform* parent, IFImage* image) {
         std::vector<GameObject*> ret;
 
-        auto duration = BeatSaberUI::CreateIncrementSetting(parent, "Duration (Seconds)", 2, 0.25, std::stof(image->GetExtraData("last_note_duration", "1")), 0.25, 100, 
+        auto duration = BSML::Lite::CreateIncrementSetting(parent, "Duration (Seconds)", 2, 0.25, std::stof(image->GetExtraData("last_note_duration", "1")), 0.25, 100, 
             [=](float f){
                 image->SetExtraData("last_note_duration", std::to_string(f));
             })->get_gameObject();
@@ -86,7 +82,7 @@ namespace ImageFactory::Presenters {
     }
 
     void LastNoteHooks() {
-        INSTALL_HOOK(getLogger(), StandardLevelDetailView_RefreshContent);
-        INSTALL_HOOK(getLogger(), NoteController_Init);
+        INSTALL_HOOK(Logger, StandardLevelDetailView_RefreshContent);
+        INSTALL_HOOK(Logger, NoteController_Init);
     }
 }

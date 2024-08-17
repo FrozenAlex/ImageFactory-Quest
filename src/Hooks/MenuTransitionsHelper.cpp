@@ -3,7 +3,7 @@
 #include "GlobalNamespace/MenuTransitionsHelper.hpp"
 #include "Presenters/PresenterManager.hpp"
 #include "Presenters/Presenter.hpp"
-
+#include "logging.hpp"
 using namespace GlobalNamespace;
 
 namespace ImageFactory {
@@ -19,7 +19,7 @@ namespace ImageFactory {
     }
 
     void Hooks::MenuTransitionsHelper() {
-        INSTALL_HOOK(getLogger(), MenuTransitionsHelper_RestartGame);
+        INSTALL_HOOK(Logger, MenuTransitionsHelper_RestartGame);
     }
 }
 

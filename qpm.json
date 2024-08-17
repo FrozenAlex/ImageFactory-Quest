@@ -7,13 +7,14 @@
     "version": "1.0.2",
     "url": null,
     "additionalData": {
-      "overrideSoName": "libImageFactory.so"
+      "overrideSoName": "libImageFactory.so",
+      "cmake": true
     }
   },
   "dependencies": [
     {
       "id": "beatsaber-hook",
-      "versionRange": "^3.14.0",
+      "versionRange": "^5.1.9",
       "additionalData": {
         "extraFiles": [
           "src/inline-hook"
@@ -21,44 +22,58 @@
       }
     },
     {
-      "id": "codegen",
-      "versionRange": "^0.33.0",
-      "additionalData": {}
+      "id": "scotland2",
+      "versionRange": "^0.1.4",
+      "additionalData": {
+        "includeQmod": false,
+        "private": true
+      }
     },
     {
       "id": "custom-types",
-      "versionRange": "^0.15.21",
+      "versionRange": "^0.17.10",
       "additionalData": {}
     },
     {
-      "id": "modloader",
-      "versionRange": "^1.2.3",
+      "id": "bs-cordl",
+      "versionRange": "^3700.0.0",
       "additionalData": {}
     },
     {
-      "id": "questui",
-      "versionRange": "^0.17.11",
+      "id": "bsml",
+      "versionRange": "^0.4.43",
       "additionalData": {}
     },
     {
       "id": "config-utils",
-      "versionRange": "^0.8.0",
+      "versionRange": "^1.4.2",
+      "additionalData": {}
+    },
+    {
+      "id": "paper",
+      "versionRange": "^3.6.3",
+      "additionalData": {
+        "private": true
+      }
+    },
+    {
+      "id": "fmt",
+      "versionRange": "^10.0.0",
       "additionalData": {}
     },
     {
       "id": "gif-lib",
       "versionRange": "^5.2.2",
-      "additionalData": {}
+      "additionalData": {
+        "private": true
+      }
     },
     {
-      "id": "paper",
-      "versionRange": "^1.2.9",
-      "additionalData": {}
-    },
-    {
-      "id": "fmt",
-      "versionRange": "^9.0.0",
-      "additionalData": {}
+      "id": "kaleb",
+      "versionRange": "^0.1.9",
+      "additionalData": {
+        "private": true
+      }
     }
   ],
   "additionalData": {}

@@ -2,26 +2,18 @@
 
 #include "IFImage.hpp"
 #include "PluginConfig.hpp"
-#include "questui/shared/QuestUI.hpp"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
 #include "UI/ImageFactoryFlowCoordinator.hpp"
 #include "paper/shared/logger.hpp"
+#include "bsml/shared/BSML.hpp"
 
 using namespace ImageFactory;
-
-static ModInfo modInfo; // Stores the ID and version of our mod, and is sent to the modloader upon startup
 
 // Loads the config from disk using our modInfo, then returns it for use
 Configuration& getConfig() {
     static Configuration config(modInfo);
     config.Load();
     return config;
-}
-
-// Returns a logger, useful for printing debug messages
-Logger& getLogger() {
-    static Logger* logger = new Logger(modInfo);
-    return *logger;
 }
 
 void ImageFactory::InstallHooks() {
@@ -40,43 +32,43 @@ void makeFolders() {
     if (!direxists(dataFolder)) {
         int result = mkpath(dataFolder);
         if (result == -1) {
-            getLogger().info("Failed creation of the main data folder!");
+            INFO("Failed creation of the main data folder!");
         }
     }
 
     if (!direxists(dataFolder + "Images/")) {
         int result = mkpath(dataFolder + "Images/");
         if (result == -1) {
-            getLogger().info("Failed creation of the images folder!");
+            INFO("Failed creation of the images folder!");
         }
     }
 }
 
 // Called at the early stages of game loading
-extern "C" void setup(ModInfo& info) {
+extern "C" __attribute__((visibility("default"))) void setup(CModInfo& info) {
     info.id = MOD_ID;
     info.version = VERSION;
-    modInfo = info;
+    info.version_long = 0;
 	
     getConfig().Load();
-    getPluginConfig().Init(info);
+    getPluginConfig().Init(modInfo);
     getConfig().Reload();
     getConfig().Write();  // Load the config file
-    getLogger().info("Completed setup!");
+    INFO("Completed setup!");
 }
 
 // Called later on in the game loading - a good time to install function hooks
-extern "C" void load() {
+extern "C" __attribute__((visibility("default"))) void late_load() {
     il2cpp_functions::Init();
+    custom_types::Register::AutoRegister();
+
+    BSML::Init();
 
     makeFolders();
 
-    QuestUI::Init();
-    custom_types::Register::AutoRegister();
+    BSML::Register::RegisterSettingsMenu<UI::ImageFactoryFlowCoordinator*>("ImageFactory");
 
-    QuestUI::Register::RegisterMainMenuModSettingsFlowCoordinator<UI::ImageFactoryFlowCoordinator*>(modInfo);
-
-    getLogger().info("Installing hooks...");
+    INFO("Installing hooks...");
     InstallHooks();
-    getLogger().info("Installed all hooks!");
+    INFO("Installed all hooks!");
 }

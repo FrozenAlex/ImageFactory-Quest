@@ -1,17 +1,14 @@
 #include "UI/ImageFactoryFlowCoordinator.hpp"
 
-#include "main.hpp"
 #include "Presenters/PresenterManager.hpp"
 #include "UI/ImageCreatorViewController.hpp"
-#include "HMUI/ViewController_AnimationDirection.hpp"
-#include "HMUI/ViewController_AnimationType.hpp"
-#include "questui/shared/QuestUI.hpp"
-#include "questui/shared/BeatSaberUI.hpp"
+#include "HMUI/ViewController.hpp"
+#include "bsml/shared/Helpers/creation.hpp"
 
 DEFINE_TYPE(ImageFactory::UI, ImageFactoryFlowCoordinator);
 
 using namespace HMUI;
-using namespace QuestUI::BeatSaberUI;
+
 
 namespace ImageFactory::UI {
 
@@ -19,19 +16,19 @@ namespace ImageFactory::UI {
                                               bool addedToHierarchy,
                                               bool screenSystemEnabling) {
         if (firstActivation) {
-            SetTitle("IMAGEFACTORY", ViewController::AnimationDirection::Horizontal);
+            SetTitle("IMAGEFACTORY", ViewController::AnimationType::In);
             showBackButton = true;
 
-            imageCreationViewController = reinterpret_cast<ImageCreationViewController*>(CreateViewController<ImageCreationViewController*>());
-            imageEditingViewController = reinterpret_cast<ImageEditingViewController*>(CreateViewController<ImageEditingViewController*>());
-            imageFactoryViewController = reinterpret_cast<ImageFactoryViewController*>(CreateViewController<ImageFactoryViewController*>());
+            imageCreationViewController = reinterpret_cast<ImageCreationViewController*>(BSML::Helpers::CreateViewController<ImageCreationViewController*>());
+            imageEditingViewController = reinterpret_cast<ImageEditingViewController*>(BSML::Helpers::CreateViewController<ImageEditingViewController*>());
+            imageFactoryViewController = reinterpret_cast<ImageFactoryViewController*>(BSML::Helpers::CreateViewController<ImageFactoryViewController*>());
         
             ProvideInitialViewControllers(imageFactoryViewController, imageCreationViewController, imageEditingViewController, nullptr, nullptr);
         }             
     }
 
     void ImageFactoryFlowCoordinator::CreateImage(StringW path) {
-        ImageCreatorViewController* viewController = reinterpret_cast<ImageCreatorViewController*>(BeatSaberUI::CreateViewController<ImageCreatorViewController*>());
+        ImageCreatorViewController* viewController = reinterpret_cast<ImageCreatorViewController*>(BSML::Helpers::CreateViewController<ImageCreatorViewController*>());
 
         if (!viewController) return;
 
@@ -39,13 +36,13 @@ namespace ImageFactory::UI {
 
         PresenterManager::DespawnAll();
         
-        SetLeftScreenViewController(BeatSaberUI::CreateViewController<HMUI::ViewController*>(), HMUI::ViewController::AnimationType::In);
-        SetRightScreenViewController(BeatSaberUI::CreateViewController<HMUI::ViewController*>(), HMUI::ViewController::AnimationType::In);
+        SetLeftScreenViewController(BSML::Helpers::CreateViewController<HMUI::ViewController*>(), HMUI::ViewController::AnimationType::In);
+        SetRightScreenViewController(BSML::Helpers::CreateViewController<HMUI::ViewController*>(), HMUI::ViewController::AnimationType::In);
         ReplaceTopViewController(viewController, this, this, nullptr, HMUI::ViewController::AnimationType::In, HMUI::ViewController::AnimationDirection::Horizontal);
     }
 
     void ImageFactoryFlowCoordinator::BackButtonWasPressed(HMUI::ViewController* topView) {
-        parentFlowCoordinator->DismissFlowCoordinator(this, HMUI::ViewController::AnimationDirection::Horizontal, nullptr, false);
+        _parentFlowCoordinator->DismissFlowCoordinator(this, HMUI::ViewController::AnimationDirection::Horizontal, nullptr, false);
     }
 
     void ImageFactoryFlowCoordinator::ResetViews() {
@@ -55,7 +52,7 @@ namespace ImageFactory::UI {
     }
 
     void ImageFactoryFlowCoordinator::EditImage(IFImage* image, TMPro::TextMeshProUGUI* text) {
-        ImageCreatorViewController* viewController = reinterpret_cast<ImageCreatorViewController*>(BeatSaberUI::CreateViewController<ImageCreatorViewController*>());
+        ImageCreatorViewController* viewController = reinterpret_cast<ImageCreatorViewController*>(BSML::Helpers::CreateViewController<ImageCreatorViewController*>());
 
         if (!viewController) return;
 
@@ -63,8 +60,8 @@ namespace ImageFactory::UI {
 
         PresenterManager::DespawnAll();
         
-        SetLeftScreenViewController(BeatSaberUI::CreateViewController<HMUI::ViewController*>(), HMUI::ViewController::AnimationType::In);
-        SetRightScreenViewController(BeatSaberUI::CreateViewController<HMUI::ViewController*>(), HMUI::ViewController::AnimationType::In);
+        SetLeftScreenViewController(BSML::Helpers::CreateViewController<HMUI::ViewController*>(), HMUI::ViewController::AnimationType::In);
+        SetRightScreenViewController(BSML::Helpers::CreateViewController<HMUI::ViewController*>(), HMUI::ViewController::AnimationType::In);
         ReplaceTopViewController(viewController, this, this, nullptr, HMUI::ViewController::AnimationType::In, HMUI::ViewController::AnimationDirection::Horizontal);
     }
 }

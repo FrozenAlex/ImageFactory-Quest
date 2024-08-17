@@ -1,0 +1,3 @@
+[submodule "include/submodules/EasyGifReader"]
+	path = include/submodules/EasyGifReader
+	url = https://github.com/Chlumsky/EasyGifReader

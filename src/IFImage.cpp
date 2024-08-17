@@ -7,21 +7,17 @@
 #include "UnityEngine/Vector3.hpp"
 #include "UnityEngine/Rect.hpp"
 #include "UnityEngine/Bounds.hpp"
-#include "questui/shared/BeatSaberUI.hpp"
 #include "Tweening/FloatTween.hpp"
 #include "custom-types/shared/delegate.hpp"
-#include "Helpers/utilities.hpp"
+#include "bsml/shared/Helpers/utilities.hpp"
 #include "System/Action.hpp"
 #include "System/Action_1.hpp"
 #include "GlobalNamespace/EaseType.hpp"
-#include "GlobalNamespace/SharedCoroutineStarter.hpp"
+#include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
 
 #include "EasyGifReader.h"
 
 using namespace UnityEngine;
-using namespace QuestUI;
-
-#define CreateCoroutine(method) GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::CoroutineHelper::New(method))
 
 DEFINE_TYPE(ImageFactory, IFImage);
 
@@ -31,12 +27,23 @@ namespace ImageFactory {
         // Can't create twice.
         CRASH_UNLESS(!hasBeenCreated);
 
-        screen = BeatSaberUI::CreateFloatingScreen({scaleX * (width / 3), scaleY * (height / 3)}, {x, y, z}, {angleX, angleY, angleZ}, 0.0f, false, true, 4);
-        image = BeatSaberUI::CreateImage(screen->get_transform(), sprite, {x, y}, {scaleX * (width / 3), scaleY * (height / 3)});
+        screen = BSML::Lite::CreateFloatingScreen(
+                {
+                    scaleX * (width / 3),
+                    scaleY * (height / 3)
+                 },
+                 {x, y, z},
+                 {angleX, angleY, angleZ},
+                 0.0f,
+                 false,
+                 true
+                 );
+        screenGO = screen->get_gameObject();
+        image = BSML::Lite::CreateImage(screen->get_transform(), sprite, {x, y}, {scaleX * (width / 3), scaleY * (height / 3)});
         Object::DontDestroyOnLoad(screen);
         Object::DontDestroyOnLoad(image);
 
-        screen->set_active(false);
+        screenGO->set_active(false);
         hasBeenCreated = true;
     }
 
@@ -69,7 +76,7 @@ namespace ImageFactory {
             y -= 1.0f;
         }
 
-        screen->set_active(false);
+        screen->get_gameObject()->set_active(false);
         self->canAnimate = false;
 
         co_return;
@@ -79,14 +86,14 @@ namespace ImageFactory {
         if (!enabled) return; 
         if (!screen) return;
         if (!getPluginConfig().Enabled.GetValue()) return;
-    
-        screen->set_active(true);
+
+        screenGO->set_active(true);
     }
 
     void IFImage::Despawn(bool anim) {
         CRASH_UNLESS(screen);
 
-        screen->set_active(false);
+        screenGO->set_active(false);
     }
 
     void IFImage::Update(bool handle) {
@@ -103,25 +110,22 @@ namespace ImageFactory {
             oldRot = screen->get_transform()->get_eulerAngles();
         }
 
-        FloatingScreen* floating = screen->GetComponent<FloatingScreen*>();
-        floating->set_screenSize({scaleX * (width / 3), scaleY * (height / 3)});
-        floating->set_showHandle(handle);
-        floating->set_side(4);
-        floating->createHandle();
-
-        floating->get_handle()->set_active(handle);
+        screen->set_ScreenSize({scaleX * (width / 3), scaleY * (height / 3)});
+        screen->set_ShowHandle(handle);
+        screen->set_HandleSide(BSML::Side::Full);
+//        floating->get_handle()->set_active(handle);
 
         screen->get_transform()->set_position(oldPos);
         screen->get_transform()->set_eulerAngles(oldRot);
 
-        RectTransform* rectTransform = reinterpret_cast<RectTransform*>(image->get_transform());
+        auto rectTransform = image->get_transform().cast<RectTransform>();
         rectTransform->set_sizeDelta({scaleX * (width / 3), scaleY * (height / 3)});
         rectTransform->set_anchoredPosition({x, y});
 
         Object::DontDestroyOnLoad(screen);
         Object::DontDestroyOnLoad(image);
 
-        screen->SetActive(enabled);
+        screenGO->SetActive(enabled);
         image->get_gameObject()->SetActive(enabled);
     }
 
@@ -189,7 +193,10 @@ namespace ImageFactory {
         auto transform = screen->get_transform();
 
         if (isAnimated) {
-            auto pos = transform->get_position() + Vector3(spriteRenderer->get_bounds().get_extents().x, spriteRenderer->get_bounds().get_extents().y, 0.0f);
+            auto pos = Vector3::op_Addition(
+                transform->get_position(),
+                Vector3(spriteRenderer->get_bounds().get_extents().x, spriteRenderer->get_bounds().get_extents().y, 0.0f)
+            );
             return pos;
         } else {    
             return transform->get_position();
@@ -200,7 +207,10 @@ namespace ImageFactory {
         auto transform = screen->get_transform();
 
         if (isAnimated) {
-            auto pos = value - Vector3(spriteRenderer->get_bounds().get_extents().x, spriteRenderer->get_bounds().get_extents().y, 0.0f);
+            auto pos = Vector3::op_Subtraction(
+                value,
+                Vector3(spriteRenderer->get_bounds().get_extents().x, spriteRenderer->get_bounds().get_extents().y, 0.0f)
+            );
             transform->set_position(pos);
         } else {
             transform->set_position(value);
@@ -231,7 +241,7 @@ namespace ImageFactory {
         }
     }
 
-    void IFImage::ctor(UnityEngine::Sprite* s, StringW p) {
+    void IFImage::ctor(UnityW<UnityEngine::Sprite> s, StringW p) {
         sprite = s;
         width = sprite->get_textureRect().get_width();
         height = sprite->get_textureRect().get_height();

@@ -2,19 +2,26 @@
 
 #include "Presenters/PresenterManager.hpp"
 #include "Presenters/ResultsScreenPresenter.hpp"
-#include "questui/shared/BeatSaberUI.hpp"
 #include "GlobalNamespace/ResultsViewController.hpp"
 #include "GlobalNamespace/LevelCompletionResults.hpp"
+#include "logging.hpp"
+#include "bsml/shared/BSML-Lite/Creation/Layout.hpp"
 
-using namespace QuestUI;
 using namespace GlobalNamespace;
 
+
+
 namespace ImageFactory::Presenters {
+
+    std::vector<std::string_view> buttonOptions = {
+        "Finished", "Passed", "Failed"
+    };
 
     std::vector<GameObject*> ResultsScreenPresenter::GetUIElements(Transform* parent, IFImage* image) {
         std::vector<GameObject*> ret;
 
-        auto dropDown = BeatSaberUI::CreateDropdown(parent, "When", image->GetExtraData("results_when", "Finished"), {"Finished", "Passed", "Failed"}, 
+        
+        auto dropDown = BSML::Lite::CreateDropdown(parent, "When", image->GetExtraData("results_when", "Finished"), buttonOptions, 
             [=](StringW s){
                 image->SetExtraData("results_when", s);  
             });
@@ -27,13 +34,13 @@ namespace ImageFactory::Presenters {
     MAKE_HOOK_MATCH(ResultsViewController_DidActivate, &ResultsViewController::DidActivate, void, ResultsViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
         ResultsViewController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
 
-        if (self->levelCompletionResults->energy <= 0) {
+        if (self->____levelCompletionResults->___energy <= 0) {
             PresenterManager::SpawnExtraData(PresenterManager::RESULTS_SCREEN, "results_when", "Failed");
         } else {
             PresenterManager::SpawnExtraData(PresenterManager::RESULTS_SCREEN, "results_when", "Passed");
         }
 
-        getLogger().info("ENERGY %f", self->levelCompletionResults->energy);
+        INFO("ENERGY {}", self->____levelCompletionResults->___energy);
         
         PresenterManager::SpawnExtraData(PresenterManager::RESULTS_SCREEN, "results_when", "Finished");
     }
@@ -45,7 +52,7 @@ namespace ImageFactory::Presenters {
     }
 
     void ResultsHooks() {
-        INSTALL_HOOK(getLogger(), ResultsViewController_DidActivate);
-        INSTALL_HOOK(getLogger(), ResultsViewController_DidDeactivate);
+        INSTALL_HOOK(Logger, ResultsViewController_DidActivate);
+        INSTALL_HOOK(Logger, ResultsViewController_DidDeactivate);
     }
 }

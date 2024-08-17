@@ -19,11 +19,10 @@
 #include "custom-types/shared/coroutine.hpp"
 #include "custom-types/shared/macros.hpp"
 #include "custom-types/shared/types.hpp"
-#include "questui/shared/CustomTypes/Components/FloatingScreen/FloatingScreen.hpp"
-#include "questui/shared/QuestUI.hpp"
+#include "bsml/shared/BSML/FloatingScreen/FloatingScreen.hpp"
+#include "bsml/shared/BSML.hpp"
 #include "Tweening/TimeTweeningManager.hpp"
 
-using namespace QuestUI;
 using namespace std;
 
 DECLARE_CLASS_CODEGEN(ImageFactory, IFImage, UnityEngine::MonoBehaviour,
@@ -52,13 +51,14 @@ DECLARE_CLASS_CODEGEN(ImageFactory, IFImage, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_FIELD(bool, inSong);
     DECLARE_INSTANCE_FIELD(bool, canAnimate);
     DECLARE_INSTANCE_FIELD(bool, isAnimated);
-    DECLARE_INSTANCE_FIELD(UnityEngine::SpriteRenderer*, spriteRenderer);
-    DECLARE_INSTANCE_FIELD(HMUI::ImageView*, image);
-    DECLARE_INSTANCE_FIELD(HMUI::ImageView*, inSongImage);
-    DECLARE_INSTANCE_FIELD(UnityEngine::Sprite*, sprite);
-    DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, screen);
-    DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, inSongScreen);
-    DECLARE_CTOR(ctor, UnityEngine::Sprite* sprite, StringW path); 
+    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::SpriteRenderer>, spriteRenderer);
+    DECLARE_INSTANCE_FIELD(UnityW<HMUI::ImageView>, image);
+    DECLARE_INSTANCE_FIELD(UnityW<HMUI::ImageView>, inSongImage);
+    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::Sprite>, sprite);
+    DECLARE_INSTANCE_FIELD(UnityW<BSML::FloatingScreen>, screen);
+    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::GameObject>, screenGO);
+    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::GameObject>, inSongScreen);
+    DECLARE_CTOR(ctor, UnityW<UnityEngine::Sprite> sprite, StringW path); 
     
     public:
         std::string name;

@@ -3,24 +3,24 @@
 #include "Presenters/PresenterManager.hpp"
 #include "Utils/StringUtils.hpp"
 #include "Presenters/PercentPresenters.hpp"
-#include "questui/shared/BeatSaberUI.hpp"
 #include "GlobalNamespace/ScoreController.hpp"
 #include "GlobalNamespace/RelativeScoreAndImmediateRankCounter.hpp"
 #include "System/Action.hpp"
-
-using namespace QuestUI;
+#include "logging.hpp"
 
 namespace ImageFactory::Presenters {
-
+    std::vector<std::string_view> dropdownOptions = {
+        "Below", "Above"
+    };
     std::vector<GameObject*> PercentPresenter::GetUIElements(Transform* parent, IFImage* image) {
         std::vector<GameObject*> ret;
 
-        auto dropDown = BeatSaberUI::CreateDropdown(parent, "When", image->GetExtraData("percent_when", "Below"), {"Below", "Above"}, 
+        auto dropDown = BSML::Lite::CreateDropdown(parent, "When", image->GetExtraData("percent_when", "Below"), dropdownOptions, 
             [=](StringW s){
                 image->SetExtraData("percent_when", s);  
             })->get_transform()->get_parent()->get_gameObject();
 
-        auto percent = BeatSaberUI::CreateIncrementSetting(parent, "%", 0, 1, std::stof(image->GetExtraData("percent_%", "80")), 0, 100, 
+        auto percent = BSML::Lite::CreateIncrementSetting(parent, "%", 0, 1, std::stof(image->GetExtraData("percent_%", "80")), 0, 100, 
             [=](float f){
                 image->SetExtraData("percent_%", StringUtils::removeTrailingZeros(round(f)));
             })->get_gameObject();
@@ -34,12 +34,12 @@ namespace ImageFactory::Presenters {
     std::vector<GameObject*> PercentRangePresenter::GetUIElements(Transform* parent, IFImage* image) {
         std::vector<GameObject*> ret;
 
-        auto above = BeatSaberUI::CreateIncrementSetting(parent, "When above (%)", 0, 1, std::stof(image->GetExtraData("percentrange_above", "80")), 0, 100, 
+        auto above = BSML::Lite::CreateIncrementSetting(parent, "When above (%)", 0, 1, std::stof(image->GetExtraData("percentrange_above", "80")), 0, 100, 
             [=](float f){
                 image->SetExtraData("percentrange_above", StringUtils::removeTrailingZeros(round(f)));
             })->get_gameObject();
 
-        auto below = BeatSaberUI::CreateIncrementSetting(parent, "When below (%)", 0, 1, std::stof(image->GetExtraData("percentrange_below", "90")), 0, 100, 
+        auto below = BSML::Lite::CreateIncrementSetting(parent, "When below (%)", 0, 1, std::stof(image->GetExtraData("percentrange_below", "90")), 0, 100, 
             [=](float f){
                 image->SetExtraData("percentrange_below", StringUtils::removeTrailingZeros(round(f)));
             })->get_gameObject();
@@ -58,7 +58,7 @@ namespace ImageFactory::Presenters {
         rankCounter->add_relativeScoreOrImmediateRankDidChangeEvent(custom_types::MakeDelegate<System::Action*>(std::function([=](){
             if (!UIUtils::NoHud()) return;
             
-            int score = rankCounter->relativeScore * 100;
+            int score = rankCounter->get_relativeScore() * 100;
             
             double percentage = (double) score;
 
@@ -94,6 +94,6 @@ namespace ImageFactory::Presenters {
     }
 
     void PercentHooks() {
-        INSTALL_HOOK(getLogger(), ScoreController_Start);
+        INSTALL_HOOK(Logger, ScoreController_Start);
     }
 }

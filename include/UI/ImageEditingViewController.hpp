@@ -3,7 +3,7 @@
 #include "HMUI/ViewController.hpp"
 #include "UnityEngine/Transform.hpp"
 #include "UnityEngine/GameObject.hpp"
-#include "questui/shared/CustomTypes/Components/Backgroundable.hpp"
+#include "bsml/shared/BSML/Components/Backgroundable.hpp"
 #include "custom-types/shared/macros.hpp"
 #include "custom-types/shared/coroutine.hpp"
 #include "GlobalNamespace/LoadingControl.hpp"
@@ -20,5 +20,5 @@ DECLARE_CLASS_CODEGEN(ImageFactory::UI, ImageEditingViewController, HMUI::ViewCo
 
     private:
         custom_types::Helpers::Coroutine SetupListElements(UnityEngine::Transform* parent);
-        std::vector<UnityEngine::GameObject*> elems;
+        std::vector<UnityW<UnityEngine::GameObject>> elems;
 );

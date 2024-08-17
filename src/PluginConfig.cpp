@@ -9,10 +9,9 @@
 #include "Utils/StringUtils.hpp"
 #include "Utils/FileUtils.hpp"
 #include "IFImage.hpp"
-
+#include "logging.hpp"
 #include <fstream>
 
-DEFINE_CONFIG(PluginConfig);
 
 using namespace UnityEngine;
 
@@ -40,7 +39,7 @@ namespace ImageFactory {
         pluginConfig.config->Write();
         pluginConfig.config->Reload();
 
-        auto flow = Object::FindObjectsOfType<UI::ImageFactoryFlowCoordinator*>().First();
+        auto flow = Object::FindObjectsOfType<UI::ImageFactoryFlowCoordinator*>()->First();
         flow->imageEditingViewController->ClearList();
     }   
 
@@ -178,7 +177,7 @@ namespace ImageFactory {
             
             // Setup image from the configValue.
             image->path = configValue["path"].GetString();
-            image->sprite = BeatSaberUI::FileToSprite(image->path);
+            image->sprite = BSML::Lite::FileToSprite(image->path);
             image->x = configValue["x"].GetFloat();
             image->y = configValue["y"].GetFloat();
             image->z = configValue["z"].GetFloat();
@@ -226,9 +225,11 @@ namespace ImageFactory {
 
             bool finished = false;
 
-            StartCoroutine(image->SetImage([&finished](){
-                finished = true;
-            }));
+            co_yield custom_types::Helpers::CoroutineHelper::New(
+                image->SetImage([&finished](){
+                    finished = true;
+                })
+            );
 
             while (!finished) {
                 co_yield nullptr;
@@ -240,7 +241,7 @@ namespace ImageFactory {
 
         PresenterManager::SpawnInMenu();
 
-        getLogger().info("DONE LOADING");
+        INFO("DONE LOADING");
 
         co_return;
     }

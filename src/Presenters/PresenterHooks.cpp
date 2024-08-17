@@ -7,6 +7,7 @@
 #include "GlobalNamespace/StandardLevelScenesTransitionSetupDataSO.hpp"
 #include "GlobalNamespace/PauseController.hpp"
 #include "GlobalNamespace/PauseMenuManager.hpp"
+#include "logging.hpp"
 
 using namespace GlobalNamespace;
 
@@ -63,11 +64,11 @@ namespace ImageFactory::Presenters {
     }
 
     void PresenterHooks() {
-        INSTALL_HOOK(getLogger(), AudioTimeSyncController_StartSong);
-        INSTALL_HOOK(getLogger(), PauseMenuManager_ShowMenu);
-        INSTALL_HOOK(getLogger(), PauseMenuManager_MenuButtonPressed);
-        INSTALL_HOOK(getLogger(), PauseMenuManager_RestartButtonPressed);
-        INSTALL_HOOK(getLogger(), PauseAnimationFinish);
-        INSTALL_HOOK(getLogger(), StandardLevelScenesTransitionSetupDataSO_Finish);
+        INSTALL_HOOK(Logger, AudioTimeSyncController_StartSong);
+        INSTALL_HOOK(Logger, PauseMenuManager_ShowMenu);
+        INSTALL_HOOK(Logger, PauseMenuManager_MenuButtonPressed);
+        INSTALL_HOOK(Logger, PauseMenuManager_RestartButtonPressed);
+        INSTALL_HOOK(Logger, PauseAnimationFinish);
+        INSTALL_HOOK(Logger, StandardLevelScenesTransitionSetupDataSO_Finish);
     }
 }
