@@ -92,19 +92,17 @@ namespace ImageFactory::UI {
 
         list->get_gameObject()->set_active(false);
 
-        StringW s = getPluginConfig().Images.GetValue();
-        ConfigDocument& config = getPluginConfig().config->config;
+        auto imageConfigs = getPluginConfig().SaveData.GetValue();
 
-        vector<std::string> split = StringUtils::split(static_cast<std::string>(s), '/');
+        for (int i = 0; i < imageConfigs.size(); i++) {
+            auto& imageConfig = imageConfigs.at(i);
 
-        for (int i = 0; i < split.size(); i++) {
-            StringW fileName = split.at(i);
-
-            if (fileName->get_Length() != 0) {
+            std::string fileName = imageConfig.LocalFilePath.value_or("");
+            if (!fileName.empty()) {
                 CreateListElement(list, false, nullptr, fileName);
             }
 
-            loadingControl->loadingText->set_text("Loading Images... (" + std::to_string(i) + "/" + std::to_string(split.size() - 1) + ")");
+            loadingControl->_loadingText->set_text("Loading Images... (" + std::to_string(i) + "/" + std::to_string(imageConfigs.size() - 1) + ")");
 
             co_yield reinterpret_cast<System::Collections::IEnumerator*>(CRASH_UNLESS(WaitForSeconds::New_ctor(0.4f)));
         }
@@ -112,7 +110,7 @@ namespace ImageFactory::UI {
         co_yield reinterpret_cast<System::Collections::IEnumerator*>(CRASH_UNLESS(WaitForSeconds::New_ctor(0.15f)));
 
         if (elems.size() == 0) {   
-            loadingControl->refreshText->get_gameObject()->SetActive(true);
+            loadingControl->_refreshText->get_gameObject()->SetActive(true);
             loadingControl->ShowText("No Images Found in Config!", false);
         } else {
             loadingControl->Hide();
@@ -125,7 +123,7 @@ namespace ImageFactory::UI {
         CreateListElement(container->get_transform(), true, image, image->internalName);
     }
 
-    void ImageEditingViewController::CreateListElement(UnityEngine::Transform* list, bool refresh, IFImage* ifimage, StringW fileName) {
+    void ImageEditingViewController::CreateListElement(UnityW<UnityEngine::Transform> list, bool refresh, UnityW<IFImage> ifimage, ImageConfig& imageConfig) {
         std::string path;
         std::string name;
         bool enabled;

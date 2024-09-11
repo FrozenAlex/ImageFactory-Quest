@@ -24,6 +24,7 @@
 #include "Tweening/TimeTweeningManager.hpp"
 
 using namespace std;
+using namespace UnityEngine;
 
 DECLARE_CLASS_CODEGEN(ImageFactory, IFImage, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_METHOD(void, Create);
@@ -31,34 +32,29 @@ DECLARE_CLASS_CODEGEN(ImageFactory, IFImage, UnityEngine::MonoBehaviour,
     DECLARE_INSTANCE_METHOD(void, Despawn, bool);
     DECLARE_INSTANCE_METHOD(void, Update, bool); 
     DECLARE_INSTANCE_METHOD(void, Destroy); 
-    DECLARE_INSTANCE_METHOD(UnityEngine::Vector2, get_size);
+    DECLARE_INSTANCE_METHOD(Vector2, get_size);
     DECLARE_INSTANCE_METHOD(void, set_size, UnityEngine::Vector2); 
-    DECLARE_INSTANCE_METHOD(UnityEngine::Vector3, get_position);
-    DECLARE_INSTANCE_METHOD(void, set_position, UnityEngine::Vector3); 
-    DECLARE_INSTANCE_METHOD(UnityEngine::Vector3, get_rotation);
-    DECLARE_INSTANCE_METHOD(void, set_rotation, UnityEngine::Vector3); 
+    DECLARE_INSTANCE_METHOD(Vector3, get_position);
+    DECLARE_INSTANCE_METHOD(void, set_position, UnityEngine::Vector3);
+    DECLARE_INSTANCE_METHOD(Quaternion, get_rotation);
+    DECLARE_INSTANCE_METHOD(void, set_rotation, UnityEngine::Quaternion);
     DECLARE_INSTANCE_FIELD(float, width);
-    DECLARE_INSTANCE_FIELD(float, height); 
-    DECLARE_INSTANCE_FIELD(float, x);
-    DECLARE_INSTANCE_FIELD(float, y); 
-    DECLARE_INSTANCE_FIELD(float, z);
-    DECLARE_INSTANCE_FIELD(float, angleX);
-    DECLARE_INSTANCE_FIELD(float, angleY);
-    DECLARE_INSTANCE_FIELD(float, angleZ);
-    DECLARE_INSTANCE_FIELD(float, scaleX);
-    DECLARE_INSTANCE_FIELD(float, scaleY); 
+    DECLARE_INSTANCE_FIELD(float, height);
+    DECLARE_INSTANCE_FIELD(Vector3, position);
+    DECLARE_INSTANCE_FIELD(Quaternion, rotation);
+    DECLARE_INSTANCE_FIELD(Vector2, scale);
     DECLARE_INSTANCE_FIELD(bool, hasBeenCreated);
     DECLARE_INSTANCE_FIELD(bool, inSong);
     DECLARE_INSTANCE_FIELD(bool, canAnimate);
     DECLARE_INSTANCE_FIELD(bool, isAnimated);
-    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::SpriteRenderer>, spriteRenderer);
+    DECLARE_INSTANCE_FIELD(UnityW<SpriteRenderer>, spriteRenderer);
     DECLARE_INSTANCE_FIELD(UnityW<HMUI::ImageView>, image);
     DECLARE_INSTANCE_FIELD(UnityW<HMUI::ImageView>, inSongImage);
-    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::Sprite>, sprite);
+    DECLARE_INSTANCE_FIELD(UnityW<Sprite>, sprite);
     DECLARE_INSTANCE_FIELD(UnityW<BSML::FloatingScreen>, screen);
-    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::GameObject>, screenGO);
-    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::GameObject>, inSongScreen);
-    DECLARE_CTOR(ctor, UnityW<UnityEngine::Sprite> sprite, StringW path); 
+    DECLARE_INSTANCE_FIELD(UnityW<GameObject>, screenGO);
+    DECLARE_INSTANCE_FIELD(UnityW<GameObject>, inSongScreen);
+    DECLARE_CTOR(ctor, UnityW<Sprite> sprite, StringW path);
     
     public:
         std::string name;

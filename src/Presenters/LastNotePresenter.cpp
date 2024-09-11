@@ -5,13 +5,14 @@
 #include "Presenters/LastNotePresenter.hpp"
 #include "GlobalNamespace/StandardLevelDetailView.hpp"
 #include "GlobalNamespace/BeatmapData.hpp"
-#include "GlobalNamespace/BeatmapDataItem.hpp"
+#include "GlobalNamespace/BeatmapBasicData.hpp"
 #include "GlobalNamespace/NoteData.hpp"
 #include "System/Threading/Tasks/Task_1.hpp"
 #include "GlobalNamespace/NoteController.hpp"
 #include "logging.hpp"
+#include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
 
-#define StartCoroutine(method) GlobalNamespace::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::CoroutineHelper::New(method))
+#define StartCoroutine(method) BSML::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::CoroutineHelper::New(method))
 
 namespace ImageFactory::Presenters {
 
@@ -28,36 +29,23 @@ namespace ImageFactory::Presenters {
         return ret;
     }
 
-    custom_types::Helpers::Coroutine GetNotesCount(IDifficultyBeatmap* difficultyBeatmap, std::function<void(int)> callback) {
-        auto* level = reinterpret_cast<IPreviewBeatmapLevel*>(difficultyBeatmap->get_level());
-
-        auto envInfo = level->get_environmentInfo();
-        auto task = difficultyBeatmap->GetBeatmapDataAsync(envInfo, nullptr);
-
-        while (!task->get_IsCompleted()) co_yield nullptr;
-
-        if (task->get_ExceptionRecorded()) {
-            callback(0);
-        } else {
-            auto data = task->get_ResultOnSuccess();
-            auto list = List<NoteData*>::New_ctor();
-            list->AddRange(data->GetBeatmapDataItems<NoteData*>(0));
-            
-            callback(list->get_Count());
-        }
-
-        co_return;
-    }
-
     int noteCount = 0;
 
     MAKE_HOOK_MATCH(StandardLevelDetailView_RefreshContent, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self) {
         StandardLevelDetailView_RefreshContent(self);
 
-        if (self->selectedDifficultyBeatmap) {
-            StartCoroutine(GetNotesCount(self->selectedDifficultyBeatmap, [&](int notes){
-                noteCount = notes;
-            }));
+
+        if (self->_beatmapLevel && self->beatmapKey) {
+            auto key = self->beatmapKey;
+            auto level = self->_beatmapLevel;
+
+            auto diff = level->GetDifficultyBeatmapData(key.beatmapCharacteristic, key.difficulty);
+            if (diff) {
+                noteCount = diff->notesCount;
+            } else {
+                noteCount = 0;
+                WARNING("Could not get the note count for the current beatmap");
+            }
         }
     }
 

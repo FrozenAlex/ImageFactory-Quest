@@ -18,9 +18,11 @@ using namespace HMUI;
 
 namespace ImageFactory::UI {
 
-    void ImageFactoryViewController::DidActivate(bool firstActivation,
-                                              bool addedToHierarchy,
-                                              bool screenSystemEnabling) {
+    void ImageFactoryViewController::DidActivate(
+        bool firstActivation,
+        bool addedToHierarchy,
+        bool screenSystemEnabling
+    ) {
         if (firstActivation) 
         {
             if (!get_gameObject()) return;
@@ -54,11 +56,11 @@ namespace ImageFactory::UI {
                         }
                     });
 
-                BSML::Lite::CreateToggle(scrollableModal->get_transform(), "Animate Images", getPluginConfig().AnimateImages.GetValue(),
-                    [](bool b) { getPluginConfig().AnimateImages.SetValue(b); });
+                BSML::Lite::CreateToggle(scrollableModal->get_transform(), "Animate Images", getPluginConfig().AllowAnimations.GetValue(),
+                    [](bool b) { getPluginConfig().AllowAnimations.SetValue(b); });
 
-                BSML::Lite::CreateToggle(scrollableModal->get_transform(), "Ignore No Text and HUDs", getPluginConfig().IgnoreNoTextAndHud.GetValue(),
-                    [](bool b) { getPluginConfig().IgnoreNoTextAndHud.SetValue(b); });
+                BSML::Lite::CreateToggle(scrollableModal->get_transform(), "Ignore No Text and HUDs", getPluginConfig().IgnoreTextAndHUDs.GetValue(),
+                    [](bool b) { getPluginConfig().IgnoreTextAndHUDs.SetValue(b); });
 
                 modal->Show();
              });

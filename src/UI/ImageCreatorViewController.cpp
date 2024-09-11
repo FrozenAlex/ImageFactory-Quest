@@ -76,15 +76,15 @@ namespace ImageFactory::UI {
                     image->Update(true);
             });
 
-            BSML::Lite::CreateIncrementSetting(settingsVert->get_transform(), "Scale X", 2, 0.1f, image->scaleX,
+            BSML::Lite::CreateIncrementSetting(settingsVert->get_transform(), "Scale X", 2, 0.1f, image->scale.x,
                 [=](float f) {
-                    image->scaleX = f;
+                    image->scale.x = f;
                     image->Update(true);
             });
 
-            BSML::Lite::CreateIncrementSetting(settingsVert->get_transform(), "Scale Y", 2, 0.1f, image->scaleY,
+            BSML::Lite::CreateIncrementSetting(settingsVert->get_transform(), "Scale Y", 2, 0.1f, image->scale.y,
                 [=](float f) {
-                    image->scaleY = f;
+                    image->scale.y = f;
                     image->Update(true);
             });
 
@@ -134,16 +134,12 @@ namespace ImageFactory::UI {
 
             auto saveButton = BSML::Lite::CreateUIButton(this->get_transform(), "", {22.0f, -38.0f}, {40.0f, 8.0f},
                 [=]() {
-                    GameObject* screen = image->screen;
+                    GameObject* screen = image->screenGO;
                     auto localPosition = screen->get_transform()->get_localPosition();
-                    auto eulerAngles = screen->get_transform()->get_rotation().get_eulerAngles();
+                    auto rotation = screen->get_transform()->get_rotation();
 
-                    image->x = localPosition.x;
-                    image->y = localPosition.y;
-                    image->z = localPosition.z;
-                    image->angleX = eulerAngles.x;
-                    image->angleY = eulerAngles.y;
-                    image->angleZ = eulerAngles.z;
+                    image->position = localPosition;
+                    image->rotation = rotation;
 
                     if (editing) {
                         Config::Update(image);

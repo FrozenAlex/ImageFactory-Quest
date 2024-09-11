@@ -27,7 +27,7 @@ void ImageFactory::InstallHooks() {
 }
 
 void makeFolders() {
-    std::string dataFolder = "/sdcard/ModData/com.beatgames.beatsaber/Mods/ImageFactory/";
+    std::string dataFolder = IMAGE_FACTORY_PATH;
 
     if (!direxists(dataFolder)) {
         int result = mkpath(dataFolder);
@@ -66,7 +66,7 @@ extern "C" __attribute__((visibility("default"))) void late_load() {
 
     makeFolders();
 
-    BSML::Register::RegisterSettingsMenu<UI::ImageFactoryFlowCoordinator*>("ImageFactory");
+    BSML::Register::RegisterSettingsMenu<ImageFactory::UI::ImageFactoryFlowCoordinator*>(MOD_ID);
 
     INFO("Installing hooks...");
     InstallHooks();

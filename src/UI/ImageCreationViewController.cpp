@@ -1,12 +1,10 @@
 #include "UI/ImageCreationViewController.hpp"
 #include "UI/ImageFactoryFlowCoordinator.hpp"
 
-#include "bsml/shared/BSML/Animations/AnimationStateUpdater.hpp"
 #include "Utils/UIUtils.hpp"
 #include "Utils/FileUtils.hpp"
 #include "Utils/StringUtils.hpp"
 #include "HMUI/Touchable.hpp"
-#include "System/Action.hpp"
 #include "System/IO/FileStream.hpp"
 #include "System/Diagnostics/Stopwatch.hpp"
 #include "UnityEngine/Rect.hpp"
@@ -19,8 +17,6 @@
 #include "bsml/shared/BSML-Lite/Creation/Buttons.hpp"
 #include "bsml/shared/BSML-Lite/Creation/Layout.hpp"
 #include "custom-types/shared/delegate.hpp"
-#include "HMUI/ImageView.hpp"
-#include "main.hpp"
 #include "bsml/shared/Helpers/utilities.hpp"
 DEFINE_TYPE(ImageFactory::UI, ImageCreationViewController);
 
@@ -197,7 +193,7 @@ namespace ImageFactory::UI {
         
         list->get_gameObject()->set_active(true);
 
-        if (images.size() == 0) {
+        if (images.empty()) {
             loadingControl->____refreshText->get_gameObject()->SetActive(true);
             loadingControl->ShowText("No images found in folder!\n/sdCard/ModData/com.beatgames/Mods/ImageFactory/Images/", true);
         } else {

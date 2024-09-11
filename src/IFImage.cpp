@@ -29,17 +29,17 @@ namespace ImageFactory {
 
         screen = BSML::Lite::CreateFloatingScreen(
                 {
-                    scaleX * (width / 3),
-                    scaleY * (height / 3)
-                 },
-                 {x, y, z},
-                 {angleX, angleY, angleZ},
+                    scale.x * (width / 3),
+                    scale.y * (height / 3)
+                },
+                 position,
+                 rotation.eulerAngles,
                  0.0f,
                  false,
                  true
-                 );
+         );
         screenGO = screen->get_gameObject();
-        image = BSML::Lite::CreateImage(screen->get_transform(), sprite, {x, y}, {scaleX * (width / 3), scaleY * (height / 3)});
+        image = BSML::Lite::CreateImage(screen->get_transform(), sprite, {position.x, position.y}, {scale.x * (width / 3), scale.y * (height / 3)});
         Object::DontDestroyOnLoad(screen);
         Object::DontDestroyOnLoad(image);
 
@@ -102,25 +102,25 @@ namespace ImageFactory {
             return;
         }
 
-        Vector3 oldPos = {x, y, z};
-        Vector3 oldRot = {angleX, angleY, angleZ};
+        Vector3 oldPos = position;
+        Quaternion oldRot = rotation;
 
         if (screen) {
             oldPos = screen->get_transform()->get_localPosition();
-            oldRot = screen->get_transform()->get_eulerAngles();
+            oldRot = screen->get_transform()->get_rotation();
         }
 
-        screen->set_ScreenSize({scaleX * (width / 3), scaleY * (height / 3)});
+        screen->set_ScreenSize({scale.x * (width / 3), scale.y * (height / 3)});
         screen->set_ShowHandle(handle);
         screen->set_HandleSide(BSML::Side::Full);
 //        floating->get_handle()->set_active(handle);
 
         screen->get_transform()->set_position(oldPos);
-        screen->get_transform()->set_eulerAngles(oldRot);
+        screen->get_transform()->set_rotation(oldRot);
 
         auto rectTransform = image->get_transform().cast<RectTransform>();
-        rectTransform->set_sizeDelta({scaleX * (width / 3), scaleY * (height / 3)});
-        rectTransform->set_anchoredPosition({x, y});
+        rectTransform->set_sizeDelta({scale.x * (width / 3), scale.y * (height / 3)});
+        rectTransform->set_anchoredPosition({position.x, position.y});
 
         Object::DontDestroyOnLoad(screen);
         Object::DontDestroyOnLoad(image);
@@ -217,13 +217,13 @@ namespace ImageFactory {
         }
     }
 
-    void IFImage::set_rotation(Vector3 value) {
-        screen->get_transform()->set_eulerAngles(value);
-        image->get_transform()->set_eulerAngles(value);
+    void IFImage::set_rotation(Quaternion value) {
+        screen->get_transform()->set_rotation(value);
+        image->get_transform()->set_rotation(value);
     }
 
-    Vector3 IFImage::get_rotation() {
-        return screen->get_transform()->get_eulerAngles();
+    Quaternion IFImage::get_rotation() {
+        return screen->get_transform()->get_rotation();
     }
 
     void IFImage::SetExtraData(StringW key, StringW val) {
@@ -245,16 +245,12 @@ namespace ImageFactory {
         sprite = s;
         width = sprite->get_textureRect().get_width();
         height = sprite->get_textureRect().get_height();
-        x = 0.0f;
-        y = 3.0f;
-        z = 5.0f;
+        position = {0.0f, 3.0f, 5.0f};
+        rotation = Quaternion::Euler(0.0f, 0.0f, 0.0f);
+        scale = {1.0f, 1.0f};
         name = FileUtils::GetFileName(p, false);
-        angleX = 0;
-        angleY = 0;
-        angleZ = 0;
+
         enabled = true;
-        scaleX = 1.0f;
-        scaleY = 1.0f;
         presentationoption = "Everywhere";
         inSong = false;
         fileName = FileUtils::GetFileName(p, false);
