@@ -173,7 +173,7 @@ namespace UIUtils {
     bool NoHud() {
         if (!model.isAlive()) model = Object::FindObjectOfType<GlobalNamespace::PlayerDataModel*>();
 
-        bool ignore = getPluginConfig().IgnoreNoTextAndHud.GetValue();
+        bool ignore = getPluginConfig().IgnoreTextAndHUDs.GetValue();
 
         if (ignore) {
             return true;

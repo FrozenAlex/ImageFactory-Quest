@@ -18,7 +18,7 @@ DECLARE_CLASS_CODEGEN(ImageFactory::UI, ImageEditingViewController, HMUI::ViewCo
     DECLARE_INSTANCE_METHOD(void, Refresh, IFImage*);
     DECLARE_INSTANCE_METHOD(void, ClearList);
 
-    void CreateListElement(UnityW<UnityEngine::Transform> parent, bool isEditing, UnityW<IFImage> image, ImageConfig& config);
+    void CreateListElement(UnityW<UnityEngine::Transform> parent, bool isEditing, UnityW<IFImage> image, std::string filename);
     private:
         custom_types::Helpers::Coroutine SetupListElements(UnityEngine::Transform* parent);
         std::vector<UnityW<UnityEngine::GameObject>> elems;

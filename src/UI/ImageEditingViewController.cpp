@@ -4,11 +4,8 @@
 #include "UI/ImageFactoryFlowCoordinator.hpp"
 #include "Utils/UIUtils.hpp"
 #include "Utils/FileUtils.hpp"
-#include "Utils/StringUtils.hpp"
-#include "HMUI/Touchable.hpp"
 #include "HMUI/Touchable.hpp"
 #include "Presenters/PresenterManager.hpp"
-#include "UnityEngine/Rect.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "UnityEngine/WaitForSeconds.hpp"
 #include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
@@ -16,11 +13,10 @@
 #include "beatsaber-hook/shared/utils/typedefs-string.hpp"
 #include "HMUI/ViewController.hpp"
 #include "PluginConfig.hpp"
-#include "main.hpp"
 #include "bsml/shared/BSML-Lite/Creation/Text.hpp"
 #include "bsml/shared/BSML-Lite/Creation/Image.hpp"
 #include "bsml/shared/BSML-Lite/Creation/Layout.hpp"
-
+#include "ImageManager.hpp"
 DEFINE_TYPE(ImageFactory::UI, ImageEditingViewController);
 
 using namespace GlobalNamespace;
@@ -109,7 +105,7 @@ namespace ImageFactory::UI {
 
         co_yield reinterpret_cast<System::Collections::IEnumerator*>(CRASH_UNLESS(WaitForSeconds::New_ctor(0.15f)));
 
-        if (elems.size() == 0) {   
+        if (elems.empty()) {
             loadingControl->_refreshText->get_gameObject()->SetActive(true);
             loadingControl->ShowText("No Images Found in Config!", false);
         } else {
@@ -123,22 +119,24 @@ namespace ImageFactory::UI {
         CreateListElement(container->get_transform(), true, image, image->internalName);
     }
 
-    void ImageEditingViewController::CreateListElement(UnityW<UnityEngine::Transform> list, bool refresh, UnityW<IFImage> ifimage, ImageConfig& imageConfig) {
+    void ImageEditingViewController::CreateListElement(UnityW<UnityEngine::Transform> list, bool refresh, UnityW<IFImage> ifimage, std::string fileName) {
         std::string path;
         std::string name;
         bool enabled;
 
+        // If image exists, get its params for the item
         if (ifimage && refresh) {
             path = ifimage->path;
             enabled = ifimage->enabled;
             name = ifimage->name;
         } else {
-            ConfigDocument& config = getPluginConfig().config->config;
-            rapidjson::Value& configValue = config[static_cast<std::string>(fileName)];
-
-            path = static_cast<std::string>(configValue["path"].GetString());
-            name = static_cast<std::string>(configValue["name"].GetString());
-            enabled = configValue["enabled"].GetBool();
+            // TODO: Figure out what it does
+            //ConfigDocument& config = getPluginConfig().config->config;
+            //rapidjson::Value& configValue = config[static_cast<std::string>(fileName)];
+            //
+            //path = static_cast<std::string>(configValue["path"].GetString());
+            //name = static_cast<std::string>(configValue["name"].GetString());
+            //enabled = configValue["enabled"].GetBool();
         }
 
         HorizontalLayoutGroup* levelBarLayout = BSML::Lite::CreateHorizontalLayoutGroup(list);
@@ -174,9 +172,10 @@ namespace ImageFactory::UI {
 
         Button* deleteButton = BSML::Lite::CreateUIButton(levelBarLayoutElement->get_transform(), "", {0.0f, 0.0f}, {12.0f, 9.0f}, 
             [=]() {
+                auto manager = ImageManager::get_instance();
                 for (std::pair<IFImage*, std::string> pair : *PresenterManager::MAP) {
                     if (pair.first->internalName.starts_with(fileName)) {
-                        Config::Delete(pair.first, true);
+                        manager->RemoveImage(pair.first);
                         levelBarLayout->get_gameObject()->set_active(false);
                         break;
                     }

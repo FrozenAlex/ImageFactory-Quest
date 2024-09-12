@@ -1,16 +1,15 @@
 #include "UI/ImageCreatorViewController.hpp"
 
 #include "UI/ImageFactoryFlowCoordinator.hpp"
-#include "PluginConfig.hpp"
 #include "Utils/UIUtils.hpp"
 #include "Presenters/PresenterManager.hpp"
-#include "Presenters/Presenter.hpp"
 #include "HMUI/CurvedCanvasSettingsHelper.hpp"
 #include "HMUI/Touchable.hpp"
 #include "UnityEngine/Rect.hpp"
 #include "UnityEngine/RectOffset.hpp"
 #include "UnityEngine/Graphics.hpp"
 #include "UnityEngine/UI/ContentSizeFitter.hpp"
+#include "ImageManager.hpp"
 
 using namespace UnityEngine::UI;
 using namespace UnityEngine;
@@ -44,6 +43,7 @@ namespace ImageFactory::UI {
                                          bool screenSystemEnabling) {
         if (firstActivation) {
             if (!get_gameObject()) return;
+
 
             get_gameObject()->AddComponent<Touchable*>();
 
@@ -125,15 +125,16 @@ namespace ImageFactory::UI {
 
             ImageFactoryFlowCoordinator* flow = Object::FindObjectsOfType<ImageFactoryFlowCoordinator*>()->First();
 
-            auto cancelButton = BSML::Lite::CreateUIButton(this->get_transform(), "", {-22.0f, -38.0f}, {40.0f, 8.0f}, 
+            auto cancelButton = BSML::Lite::CreateUIButton(this, "", {-22.0f, -38.0f}, {40.0f, 8.0f},
                 [=]() {
                     flow->ResetViews();
             });
 
             BSML::Lite::CreateText(cancelButton->get_transform(), "CANCEL")->set_alignment(TMPro::TextAlignmentOptions::Center);
 
-            auto saveButton = BSML::Lite::CreateUIButton(this->get_transform(), "", {22.0f, -38.0f}, {40.0f, 8.0f},
+            auto saveButton = BSML::Lite::CreateUIButton(this, "", {22.0f, -38.0f}, {40.0f, 8.0f},
                 [=]() {
+                    auto manager = ImageManager::get_instance();
                     GameObject* screen = image->screenGO;
                     auto localPosition = screen->get_transform()->get_localPosition();
                     auto rotation = screen->get_transform()->get_rotation();
@@ -142,11 +143,12 @@ namespace ImageFactory::UI {
                     image->rotation = rotation;
 
                     if (editing) {
-                        Config::Update(image);
-
+                        manager->UpdateImage(image);
                         Object::Destroy(backUpImage);
                     } else {
-                        Config::Add(image);
+                        manager->AddImage(image);
+                        // TODO: Add the image to the config
+                        manager->AddNewImage(image);
                     }
                     
                     PresenterManager::Parse(image, image->presentationoption);

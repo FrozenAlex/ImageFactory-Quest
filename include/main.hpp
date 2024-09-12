@@ -17,12 +17,6 @@ inline modloader::ModInfo modInfo = {MOD_ID, VERSION, 0}; // Stores the ID and v
 // Define these functions here so that we can easily read configuration and log information from other files
 Configuration& getConfig();
 
-#define INFO(...) Paper::Logger::fmtLog<Paper::LogLevel::INF>(__VA_ARGS__)
-#define ERROR(...) Paper::Logger::fmtLog<Paper::LogLevel::ERR>(__VA_ARGS__)
-#define CRITICAL(...) Paper::Logger::fmtLog<Paper::LogLevel::ERR>(__VA_ARGS__)
-#define DEBUG(...) Paper::Logger::fmtLog<Paper::LogLevel::DBG>(__VA_ARGS__)
-#define WARNING(...) Paper::Logger::fmtLog<Paper::LogLevel::WRN>(__VA_ARGS__)
-
 namespace ImageFactory {    
     namespace Hooks {
         void MenuTransitionsHelper();

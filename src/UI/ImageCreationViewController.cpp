@@ -6,6 +6,7 @@
 #include "Utils/StringUtils.hpp"
 #include "HMUI/Touchable.hpp"
 #include "System/IO/FileStream.hpp"
+#include "System/IO/FileMode.hpp"
 #include "System/Diagnostics/Stopwatch.hpp"
 #include "UnityEngine/Rect.hpp"
 #include "UnityEngine/Resources.hpp"

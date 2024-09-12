@@ -6,7 +6,7 @@
 #include "UI/ImageFactoryFlowCoordinator.hpp"
 #include "paper/shared/logger.hpp"
 #include "bsml/shared/BSML.hpp"
-
+#include "logging.hpp"
 using namespace ImageFactory;
 
 // Loads the config from disk using our modInfo, then returns it for use

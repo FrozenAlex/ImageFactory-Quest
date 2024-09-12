@@ -4,6 +4,7 @@
 #include "UnityEngine/Vector2.hpp"
 #include "UnityEngine/Vector3.hpp"
 #include "UnityEngine/Vector4.hpp"
+#include "UnityEngine/Quaternion.hpp"
 
 #include "IFImage.hpp"
 #include <iostream>
@@ -19,6 +20,27 @@ static std::string IMAGE_FACTORY_PATH = fmt::format(IMAGE_FACTORY_PATH_FORMAT, m
 static std::string IMAGE_FACTORY_IMAGES_PATH = IMAGE_FACTORY_PATH + "Images/";
 
 
+// Declare quaternion
+#define CONVERSION(clazz, construct, convert) \
+clazz(const UnityEngine::clazz& other) { construct; } \
+clazz& operator=(const UnityEngine::clazz& other) { construct; return *this; } \
+operator UnityEngine::clazz() const { return UnityEngine::clazz convert; }
+
+namespace ConfigUtils {
+    DECLARE_JSON_CLASS(Quaternion,
+       VALUE(float, x)
+       VALUE(float, y)
+       VALUE(float, z)
+       VALUE(float, w)
+       CONVERSION(Quaternion, x = other.x; y = other.y; z = other.z; w = other.w, (x, y, z, w))
+       Quaternion() = default;
+       Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+    )
+}
+
+#undef CONVERSION
+
+
 DECLARE_JSON_CLASS(PresentationOptions,
     NAMED_VALUE_OPTIONAL(std::string, PresentationID, "PresentationID");
     NAMED_VALUE_OPTIONAL(std::string, Value, "Value");
@@ -28,9 +50,9 @@ DECLARE_JSON_CLASS(PresentationOptions,
 
 DECLARE_JSON_CLASS(ImageConfig,
     NAMED_VALUE_DEFAULT(bool, Enabled, true,  "Enabled");
-    NAMED_VALUE(UnityEngine::Vector2, Size, "Size");
-    NAMED_VALUE(UnityEngine::Vector3, Position, "Position");
-    NAMED_VALUE(UnityEngine::Quaternion, Rotation, "Rotation");
+    NAMED_VALUE(ConfigUtils::Vector2, Size, "Size");
+    NAMED_VALUE(ConfigUtils::Vector3, Position, "Position");
+    NAMED_VALUE(ConfigUtils::Quaternion, Rotation, "Rotation");
     NAMED_VALUE_OPTIONAL(std::string, Name, "Name");
     NAMED_VALUE_OPTIONAL(std::string, LocalFilePath, "LocalFilePath");
 
@@ -41,7 +63,6 @@ DECLARE_CONFIG(PluginConfig,
     CONFIG_VALUE(Enabled, bool, "Enabled", true);
     CONFIG_VALUE(AllowAnimations, bool, "AllowAnimations", true);
     CONFIG_VALUE(IgnoreTextAndHUDs, bool, "IgnoreTextAndHUDs", false);
-    
     CONFIG_VALUE(SaveData, std::vector<ImageConfig>, "SaveData", std::vector<ImageConfig>());
 );
 
@@ -49,9 +70,5 @@ namespace ImageFactory {
     class Config {
         public:
             static void Reset();
-            static void Delete(IFImage* image, bool clearInfo);
-            static void Add(IFImage* image);
-            static void Update(IFImage* image);
-            static custom_types::Helpers::Coroutine LoadImages();
     };
 }

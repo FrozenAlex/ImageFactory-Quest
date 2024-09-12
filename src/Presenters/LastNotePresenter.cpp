@@ -6,6 +6,7 @@
 #include "GlobalNamespace/StandardLevelDetailView.hpp"
 #include "GlobalNamespace/BeatmapData.hpp"
 #include "GlobalNamespace/BeatmapBasicData.hpp"
+#include "GlobalNamespace/BeatmapLevel.hpp"
 #include "GlobalNamespace/NoteData.hpp"
 #include "System/Threading/Tasks/Task_1.hpp"
 #include "GlobalNamespace/NoteController.hpp"
