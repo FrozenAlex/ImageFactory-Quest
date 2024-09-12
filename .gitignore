@@ -63,3 +63,5 @@ qpm_defines.cmake
 cmake-build-*/
 extern.cmake
 include/assets.hpp
+
+mod.json
