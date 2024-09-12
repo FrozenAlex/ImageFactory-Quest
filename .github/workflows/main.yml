@@ -70,7 +70,7 @@ jobs:
         if-no-files-found: error
 
     - name: Upload debug artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: debug_${{ steps.libname.outputs.NAME }}
         path: ./build/debug/${{ steps.libname.outputs.NAME }}

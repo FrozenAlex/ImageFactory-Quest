@@ -25,7 +25,7 @@ jobs:
         TEMP=$(echo "$GITHUB_REF_NAME" | grep -Po "(?<=v)\d+.\d+.\d+")
         echo "VERSION=$TEMP" >> $GITHUB_ENV
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       name: Checkout
       with:
         submodules: true
