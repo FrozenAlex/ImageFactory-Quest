@@ -45,7 +45,7 @@ void makeFolders() {
 }
 
 // Called at the early stages of game loading
-extern "C" __attribute__((visibility("default"))) void setup(CModInfo& info) {
+extern "C" __attribute__((visibility("default"))) void setup(CModInfo& info) noexcept {
     info.id = MOD_ID;
     info.version = VERSION;
     info.version_long = 0;
@@ -58,7 +58,7 @@ extern "C" __attribute__((visibility("default"))) void setup(CModInfo& info) {
 }
 
 // Called later on in the game loading - a good time to install function hooks
-extern "C" __attribute__((visibility("default"))) void late_load() {
+extern "C" __attribute__((visibility("default"))) void late_load() noexcept {
     il2cpp_functions::Init();
     custom_types::Register::AutoRegister();
 
