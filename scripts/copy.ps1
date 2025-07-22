@@ -21,7 +21,10 @@ Param(
     [String] $file="",
 
     [Parameter(Mandatory=$false)]
-    [Switch] $help
+    [Switch] $help,
+    
+    [Parameter(Mandatory=$false)]
+    [Switch] $release
 )
 
 if ($help -eq $true) {
@@ -39,7 +42,7 @@ if ($help -eq $true) {
     exit
 }
 
-& $PSScriptRoot/build.ps1 -clean:$clean
+& $PSScriptRoot/build.ps1 -clean:$clean -release:$release
 
 if ($LASTEXITCODE -ne 0) {
     Write-Output "Failed to build, exiting..."

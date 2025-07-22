@@ -3,7 +3,9 @@ Param(
     [String] $qmodName="",
 
     [Parameter(Mandatory=$false)]
-    [Switch] $help
+    [Switch] $help,
+    [Parameter(Mandatory=$false)]
+    [Switch] $release
 )
 
 if ($help -eq $true) {

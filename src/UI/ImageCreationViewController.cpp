@@ -1,6 +1,6 @@
 #include "UI/ImageCreationViewController.hpp"
 #include "UI/ImageFactoryFlowCoordinator.hpp"
-
+#include "logging.hpp"
 #include "Utils/UIUtils.hpp"
 #include "Utils/FileUtils.hpp"
 #include "Utils/StringUtils.hpp"
@@ -11,6 +11,7 @@
 #include "UnityEngine/Rect.hpp"
 #include "UnityEngine/Resources.hpp"
 #include "UnityEngine/WaitForSeconds.hpp"
+#include "UnityEngine/HideFlags.hpp"
 #include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
 #include "bsml/shared/BSML/MainThreadScheduler.hpp"
 #include "bsml/shared/BSML-Lite/Creation/Text.hpp"
@@ -104,18 +105,26 @@ namespace ImageFactory::UI {
             levelBarLayoutElement->set_minHeight(10.0f);
             levelBarLayoutElement->set_minWidth(20.0f);
 
-            Sprite* sprite = BSML::Lite::FileToSprite(image);
-            Object::DontDestroyOnLoad(sprite);
 
-            auto img = BSML::Lite::CreateImage(levelBarLayoutElement->get_transform(), sprite, Vector2(2.0f, 0.0f), Vector2(10.0f, 2.0f));
+
+            SafePtrUnity<Sprite> sprite = nullptr;
+            if (FileUtils::isGifFile(image)) {
+                sprite = UIUtils::FirstFrame(image);
+            } else {
+                sprite = BSML::Lite::FileToSprite(image);
+            }
+            if (!sprite) {
+                DEBUG("Failed to load sprite from image: {}", image);
+                continue;
+            }
+            sprite->set_hideFlags(HideFlags::None);
+            Object::DontDestroyOnLoad(sprite.ptr());
+        
+            co_yield reinterpret_cast<Collections::IEnumerator*>(CRASH_UNLESS(WaitForSeconds::New_ctor(0.3f)));
+
+            auto img = BSML::Lite::CreateImage(levelBarLayoutElement->get_transform(), sprite.ptr(), Vector2(2.0f, 0.0f), Vector2(10.0f, 2.0f));
 
             SetPreferredSize(img, 10.0f, 2.0f);
-
-            if (FileUtils::isGifFile(image)) {
-                img->set_sprite(UIUtils::FirstFrame(image));  
-
-                co_yield reinterpret_cast<Collections::IEnumerator*>(CRASH_UNLESS(WaitForSeconds::New_ctor(0.5f)));
-            }
 
             System::IO::FileStream* stream = System::IO::FileStream::New_ctor(image, System::IO::FileMode::Open, ::System::IO::FileAccess::Read);
 
@@ -200,7 +209,6 @@ namespace ImageFactory::UI {
         } else {
             loadingControl->Hide();
         }
-
         co_return;
     }
 }

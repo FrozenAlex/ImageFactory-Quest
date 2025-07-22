@@ -1,6 +1,8 @@
 #include "ConfigManager.hpp"
 #include "PluginConfig.hpp"
 #include "Utils/FileUtils.hpp"
+#include <memory>
+#include <optional>
 #include <unordered_map>
 #include <vector>
 #include "IFImage.hpp"
@@ -10,22 +12,19 @@ using namespace UnityEngine;
 #define RESET_CONFIG_VALUE(value) \
     value.SetValue(value.GetDefaultValue())
 
-std::list<ImageConfig*> imageConfigs;
-std::unordered_map<ImageConfig*, SafePtrUnity<ImageFactory::IFImage>> imageConfigMap;
+std::list<shared_ptr<ImageConfig>> imageConfigs;
+std::unordered_map<shared_ptr<ImageConfig>, SafePtrUnity<ImageFactory::IFImage>> imageConfigMap;
 
 bool isLoaded = false;
 
 namespace ImageFactory::Config {
-    std::list<ImageConfig*>* getImageConfigsList() {
+    std::list<shared_ptr<ImageConfig>>* getImageConfigsList() {
         return &imageConfigs;
     }
 
     void ClearImages() {
         if (!isLoaded) return;
 
-        for (auto& imageConfig : imageConfigs) {
-            delete imageConfig;
-        };
         imageConfigs.clear();
         imageConfigMap.clear();
         PluginConfig_t& pluginConfig = getPluginConfig();
@@ -45,9 +44,6 @@ namespace ImageFactory::Config {
         RESET_CONFIG_VALUE(pluginConfig.SaveData);
 
         isLoaded = false;
-        for (auto& imageConfig : imageConfigs) {
-            delete imageConfig;
-        }
         imageConfigs.clear();
         imageConfigMap.clear();
         pluginConfig.Save();
@@ -60,7 +56,7 @@ namespace ImageFactory::Config {
         if (!isLoaded) return;
         
         int sizeBefore = imageConfigs.size();
-        imageConfigs.remove_if([](ImageConfig* imageConfig) {
+        imageConfigs.remove_if([](shared_ptr<ImageConfig> imageConfig) {
             if (!imageConfig->LocalFilePath.has_value()) {
                 return true;
             }
@@ -90,7 +86,7 @@ namespace ImageFactory::Config {
         
         auto configValues = pluginConfig.SaveData.GetValue();
         for (const auto& config : configValues) {
-            ImageConfig* imageConfig = new ImageConfig();
+            shared_ptr<ImageConfig> imageConfig = std::make_shared<ImageConfig>();
             imageConfig->Enabled = config.Enabled;
             imageConfig->Size = config.Size;
             imageConfig->Position = config.Position;
@@ -132,33 +128,32 @@ namespace ImageFactory::Config {
         pluginConfig.Save();
     }
 
-    void RemoveImage(ImageConfig* imageConfig) {
+    void RemoveImage(shared_ptr<ImageConfig> imageConfig) {
         if (!isLoaded) {
             WARNING("ImageFactory Config is not loaded, cannot remove image.");
             return;
         };
 
+        if (imageConfigMap.find(imageConfig) != imageConfigMap.end()) {
+            imageConfigMap.erase(imageConfig);
+        }
+
         auto it = std::find(imageConfigs.begin(), imageConfigs.end(), imageConfig);
         if (it != imageConfigs.end()) {
             imageConfigs.erase(it);
-            delete imageConfig;
             Save();
         } else {
             WARNING("ImageConfig not found in the list to delete it");
         }
-
-        if (imageConfigMap.find(imageConfig) != imageConfigMap.end()) {
-            imageConfigMap.erase(imageConfig);
-        }
     }
 
-    ImageConfig* AddImage(ImageConfig imageConfig) {
+    shared_ptr<ImageConfig> AddImage(ImageConfig imageConfig) {
         if (!isLoaded) {
             WARNING("ImageFactory Config is not loaded, cannot add image.");
             return nullptr;
         };
 
-        ImageConfig* newImageConfig = new ImageConfig();
+        shared_ptr<ImageConfig> newImageConfig = std::make_shared<ImageConfig>();
         newImageConfig->Enabled = imageConfig.Enabled;
         newImageConfig->Size = imageConfig.Size;
         newImageConfig->Position = imageConfig.Position;
@@ -172,7 +167,7 @@ namespace ImageFactory::Config {
         return newImageConfig;
     }
 
-    void AttachImageToConfig(UnityW<ImageFactory::IFImage> image, ImageConfig* imageConfig) {
+    void AttachImageToConfig(UnityW<ImageFactory::IFImage> image, shared_ptr<ImageConfig> imageConfig) {
         if (!isLoaded) {
             WARNING("ImageFactory Config is not loaded, cannot attach image to config.");
             return;
@@ -184,7 +179,7 @@ namespace ImageFactory::Config {
             WARNING("ImageConfig already has an associated IFImage");
         }
     }
-    void ReorderImages(ImageConfig* from, ImageConfig* to) {
+    void ReorderImages(shared_ptr<ImageConfig> from, shared_ptr<ImageConfig> to) {
         if (!isLoaded) return;
         auto itFrom = std::find(imageConfigs.begin(), imageConfigs.end(), from);
         auto itTo = std::find(imageConfigs.begin(), imageConfigs.end(), to);
@@ -197,7 +192,7 @@ namespace ImageFactory::Config {
         }
     }
 
-    ImageConfig* GetConfigByImage(UnityW<ImageFactory::IFImage> image) {
+    std::optional<shared_ptr<ImageConfig>> GetConfigByImage(UnityW<ImageFactory::IFImage> image) {
         if (!isLoaded) {
             WARNING("ImageFactory Config is not loaded, cannot get config by image.");
             return nullptr;
@@ -205,13 +200,17 @@ namespace ImageFactory::Config {
 
         for (auto& pair : imageConfigMap) {
             if (pair.second == image) {
-                return pair.first;
+                auto pointer = pair.first; // Return the shared_ptr to the ImageConfig (can be null)
+                if (!pointer) {
+                    return std::nullopt; // If the weak_ptr is expired, return nullopt
+                }
+                return pointer; // Return the shared_ptr to the ImageConfig
             }
         }
-        return nullptr; // Not found
+        return std::nullopt; // Not found
     }
 
-    UnityW<ImageFactory::IFImage> GetImageByConfig(ImageConfig* imageConfig) {
+    UnityW<ImageFactory::IFImage> GetImageByConfig(shared_ptr<ImageConfig> imageConfig) {
         if (!isLoaded) {
             WARNING("ImageFactory Config is not loaded, cannot get image by config.");
             return nullptr;

@@ -57,6 +57,7 @@ extern "C" __attribute__((visibility("default"))) void late_load()  {
     makeFolders();
 
     BSML::Register::RegisterSettingsMenu<ImageFactory::UI::ImageFactoryFlowCoordinator*>(MOD_ID);
+    BSML::Register::RegisterMainMenu<ImageFactory::UI::ImageFactoryFlowCoordinator*>(MOD_ID, "Place images around the game!");
 
     INFO("Installing hooks...");
     InstallHooks();

@@ -134,7 +134,9 @@ void ImageFactory::ImageManager::RemoveImage(UnityW<IFImage> image) {
     images->Remove(image);
     image->Destroy();
 
-    ImageFactory::Config::RemoveImage(imageConfig);
+    if (imageConfig.has_value()) {
+        ImageFactory::Config::RemoveImage(imageConfig.value());
+    }
 }
 
 void ImageFactory::ImageManager::UpdateImage(UnityW<IFImage> image) {
@@ -145,11 +147,12 @@ void ImageFactory::ImageManager::UpdateImage(UnityW<IFImage> image) {
         return;
     }
 
-    auto imageConfig = ImageFactory::Config::GetConfigByImage(image);
-    if (!imageConfig) {
+    auto imageConfigOptional = ImageFactory::Config::GetConfigByImage(image);
+    if (!imageConfigOptional) {
         WARNING("ImageConfig not found for the image");
         return;
     }
+    auto imageConfig = imageConfigOptional.value();
 
     imageConfig->Position = image->position;
     imageConfig->Rotation = image->rotation;
@@ -173,11 +176,21 @@ void ImageFactory::ImageManager::UpdateImage(UnityW<IFImage> image) {
 }
 
 void ImageFactory::ImageManager::RemoveAllImages() {
-    for (auto& image : images) {
-        image->Destroy();
+    DEBUG("Removing all images from the ImageManager");
+    if (!images) {
+        DEBUG("No images to remove from the ImageManager");
+        return;
     }
-
+    for (auto& image : images) {
+        if (image) {
+            image->Destroy();
+        }
+    }
+    DEBUG("All images destroyed from the ImageManager");
     images->Clear();
+    DEBUG("All images removed from the ImageManager");
+    // Clear the config images as well.
+    DEBUG("Clearing all images from the ImageFactory Config");
     ImageFactory::Config::ClearImages();
 }
 

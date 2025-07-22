@@ -4,15 +4,15 @@
 #include <string>
 
 namespace ImageFactory::Config {
-    std::list<ImageConfig*>* getImageConfigsList();
+    std::list<shared_ptr<ImageConfig>>* getImageConfigsList();
     void ClearImages();
     void Reset();
     void Load();
     void Save();
-    void RemoveImage(ImageConfig* imageConfig);
-    void AddImage(ImageConfig& imageConfig);
-    void AttachImageToConfig(UnityW<ImageFactory::IFImage> image, ImageConfig* imageConfig);
-    void ReorderImages(ImageConfig* from, ImageConfig* to);
-    ImageConfig* GetConfigByImage(UnityW<ImageFactory::IFImage> image);
-    UnityW<ImageFactory::IFImage> GetImageByConfig(ImageConfig* imageConfig);
+    void RemoveImage(shared_ptr<ImageConfig> imageConfig);
+    shared_ptr<ImageConfig> AddImage(ImageConfig imageConfig);
+    void AttachImageToConfig(UnityW<ImageFactory::IFImage> image, shared_ptr<ImageConfig> imageConfig);
+    void ReorderImages(shared_ptr<ImageConfig> from, shared_ptr<ImageConfig> to);
+    std::optional<shared_ptr<ImageConfig>> GetConfigByImage(UnityW<ImageFactory::IFImage> image);
+    UnityW<ImageFactory::IFImage> GetImageByConfig(shared_ptr<ImageConfig> imageConfig);
 };
