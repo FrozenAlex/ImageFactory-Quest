@@ -50,7 +50,8 @@ namespace ImageFactory::Presenters {
         }
     }
 
-    MAKE_HOOK_MATCH(NoteController_Init, &NoteController::Init, void, NoteController* self, NoteData* noteData, float worldRotation, Vector3 moveStartPos, Vector3 moveEndPos, Vector3 jumpEndPos, float moveDuration, float jumpDuration, float jumpGravity, float endRotation, float uniformScale, bool rotateTowardsPlayer, bool useRandomRotation) {
+    MAKE_HOOK_MATCH(NoteController_Init, &NoteController::Init, void, NoteController* self, 
+    ::GlobalNamespace::NoteData* noteData, ::ByRef<::GlobalNamespace::NoteSpawnData> noteSpawnData, float_t endRotation, float_t uniformScale, bool rotateTowardsPlayer, bool useRandomRotation) {
         Presenter::currentNoteCount++;
 
         if (Presenter::currentNoteCount == noteCount) {
@@ -64,10 +65,8 @@ namespace ImageFactory::Presenters {
                 }
             }
         }
-         
-        NoteController_Init(self, noteData, worldRotation, moveStartPos, moveEndPos,
-                            jumpEndPos, moveDuration, jumpDuration, jumpGravity,
-                            endRotation, uniformScale, rotateTowardsPlayer, useRandomRotation);
+        NoteController_Init(self, noteData, noteSpawnData, endRotation, uniformScale,
+                            rotateTowardsPlayer, useRandomRotation);
     }
 
     void LastNoteHooks() {

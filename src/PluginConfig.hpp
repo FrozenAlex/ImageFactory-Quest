@@ -27,28 +27,29 @@ clazz& operator=(const UnityEngine::clazz& other) { construct; return *this; } \
 operator UnityEngine::clazz() const { return UnityEngine::clazz convert; }
 
 namespace ConfigUtils {
-    DECLARE_JSON_CLASS(Quaternion,
-       VALUE(float, x)
-       VALUE(float, y)
-       VALUE(float, z)
-       VALUE(float, w)
-       CONVERSION(Quaternion, x = other.x; y = other.y; z = other.z; w = other.w, (x, y, z, w))
-       Quaternion() = default;
-       Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
-    )
+    DECLARE_JSON_STRUCT(Quaternion) {
+        VALUE(float, x);
+        VALUE(float, y);
+        VALUE(float, z);
+        VALUE(float, w);
+        CONVERSION(Quaternion, x = other.x; y = other.y; z = other.z; w = other.w, (x, y, z, w));
+        Quaternion() = default;
+        Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+    };
 }
 
 #undef CONVERSION
 
 
-DECLARE_JSON_CLASS(PresentationOptions,
+DECLARE_JSON_STRUCT(PresentationOptions) {
     NAMED_VALUE_OPTIONAL(std::string, PresentationID, "PresentationID");
     NAMED_VALUE_OPTIONAL(std::string, Value, "Value");
     // Zero Duration will be infinite
-    NAMED_VALUE_DEFAULT(float, Duration, 0.0f, "Duration");
-)
+    NAMED_VALUE_DEFAULT(float, Duration, 0.1f, "Duration");
+};
+  
 
-DECLARE_JSON_CLASS(ImageConfig,
+DECLARE_JSON_STRUCT(ImageConfig) {
     NAMED_VALUE_DEFAULT(bool, Enabled, true,  "Enabled");
     NAMED_VALUE(ConfigUtils::Vector2, Size, "Size");
     NAMED_VALUE(ConfigUtils::Vector3, Position, "Position");
@@ -57,18 +58,11 @@ DECLARE_JSON_CLASS(ImageConfig,
     NAMED_VALUE_OPTIONAL(std::string, LocalFilePath, "LocalFilePath");
 
     NAMED_VALUE(PresentationOptions, Presentation, "Presentation");
-)
+};
 
-DECLARE_CONFIG(PluginConfig,
+DECLARE_CONFIG(PluginConfig) {
     CONFIG_VALUE(Enabled, bool, "Enabled", true);
     CONFIG_VALUE(AllowAnimations, bool, "AllowAnimations", true);
     CONFIG_VALUE(IgnoreTextAndHUDs, bool, "IgnoreTextAndHUDs", false);
     CONFIG_VALUE(SaveData, std::vector<ImageConfig>, "SaveData", std::vector<ImageConfig>());
-);
-
-namespace ImageFactory {
-    class Config {
-        public:
-            static void Reset();
-    };
-}
+};

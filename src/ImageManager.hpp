@@ -8,7 +8,7 @@
 using namespace std;
 using namespace UnityEngine;
 
-DECLARE_CLASS_CODEGEN(ImageFactory, ImageManager, UnityEngine::MonoBehaviour,
+DECLARE_CLASS_CODEGEN(ImageFactory, ImageManager, UnityEngine::MonoBehaviour) {
     DECLARE_INSTANCE_METHOD(void, AddNewImage, UnityW<IFImage>);
     DECLARE_INSTANCE_METHOD(void, AddImage, UnityW<IFImage>);
     DECLARE_INSTANCE_METHOD(void, RemoveImage, UnityW<IFImage>);
@@ -22,4 +22,4 @@ DECLARE_CLASS_CODEGEN(ImageFactory, ImageManager, UnityEngine::MonoBehaviour,
     public:
         static UnityW<ImageManager> get_instance();
         custom_types::Helpers::Coroutine LoadImages();
-)
+};

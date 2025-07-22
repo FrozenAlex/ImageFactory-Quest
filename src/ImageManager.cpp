@@ -10,40 +10,28 @@
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/TextureFormat.hpp"
 #include <fstream>
+#include "ConfigManager.hpp"
 
 DEFINE_TYPE(ImageFactory, ImageManager);
 
 
 custom_types::Helpers::Coroutine ImageFactory::ImageManager::LoadImages() {
-    // Parse images and  Loop through each image
-    auto imageConfigs = getPluginConfig().SaveData.GetValue();
+    // Parse images and Loop through each image
+    INFO("Loading images...");
+    ImageFactory::Config::Load();
 
-    // Remove all invalid config entries.
-    int vectorSizeBeforeCleanup = imageConfigs.size();
-    imageConfigs.erase(std::remove_if(imageConfigs.begin(), imageConfigs.end(), [](ImageConfig& imageConfig) {
-        if (!imageConfig.LocalFilePath.has_value()) {
-            return true;
-        }
-        if (imageConfig.LocalFilePath->empty()) {
-            return true;
-        }
-        auto fullFilePath = IMAGE_FACTORY_IMAGES_PATH + imageConfig.LocalFilePath.value();
-        if (!fileexists(fullFilePath)) {
-            WARNING("File not found: {}", fullFilePath);
-            return true;
-        }
-        return false;
-    }), imageConfigs.end());
-    int vectorSizeAfterCleanup = images.size();
-    INFO("Removed {} invalid entries from the config.", vectorSizeBeforeCleanup - vectorSizeAfterCleanup);
-    if (vectorSizeBeforeCleanup != vectorSizeAfterCleanup) {
-        getPluginConfig().SaveData.SetValue(imageConfigs);
+    auto imageConfigs = ImageFactory::Config::getImageConfigsList();
+    if (imageConfigs->empty()) {
+        INFO("No images found in the config, skipping loading.");
+        co_return;
     }
+    INFO("Found {} images in the config.", imageConfigs->size());
+
 
     // Loop through each image
-    for (auto& imageConfig: imageConfigs ) {
+    for (auto imageConfig: *imageConfigs ) {
         // Check if the file exists, if not, continue to the next.
-        auto fullFilePath = IMAGE_FACTORY_IMAGES_PATH + imageConfig.LocalFilePath.value();
+        auto fullFilePath = IMAGE_FACTORY_IMAGES_PATH + imageConfig->LocalFilePath.value();
 
         fstream f(fullFilePath);
 
@@ -55,22 +43,24 @@ custom_types::Helpers::Coroutine ImageFactory::ImageManager::LoadImages() {
 
         // Create the image object.
         IFImage* image = this->go->AddComponent<IFImage*>();
+        
+        ImageFactory::Config::AttachImageToConfig(image, imageConfig);
 
         // Setup image from the configValue.
         image->path = fullFilePath;
         image->sprite = BSML::Lite::FileToSprite(image->path);
-        image->position = imageConfig.Position;
-        image->rotation = imageConfig.Rotation;
-        image->scale = imageConfig.Size;
-        image->name = imageConfig.Name.value_or("");
-        image->presentationoption = imageConfig.Presentation.PresentationID.value_or("");
-        image->enabled = imageConfig.Enabled;
+        image->position = imageConfig->Position;
+        image->rotation = imageConfig->Rotation;
+        image->scale = imageConfig->Size;
+        image->name = imageConfig->Name.value_or("");
+        image->presentationoption = imageConfig->Presentation.PresentationID.value_or("");
+        image->enabled = imageConfig->Enabled;
         image->extraData = new std::unordered_map<std::string, std::string>();
         image->isAnimated = FileUtils::isGifFile(image->path);
         image->canAnimate = false;
 
         // Setup lookup dictionary for extra data.
-        StringW extraData = imageConfig.Presentation.Value.value_or("");
+        StringW extraData = imageConfig->Presentation.Value.value_or("");
         if (extraData->get_Length() != 0) {
             std::vector<std::string> pairs = StringUtils::split(extraData, '/');
 
@@ -139,13 +129,12 @@ void ImageFactory::ImageManager::RemoveImage(UnityW<IFImage> image) {
         WARNING("Image not found in the list to delete it");
         return;
     }
+    auto imageConfig = ImageFactory::Config::GetConfigByImage(image);
 
     images->Remove(image);
     image->Destroy();
 
-    auto imageConfigs = getPluginConfig().SaveData.GetValue();
-    imageConfigs.erase(imageConfigs.begin() + indexOfImage);
-    getPluginConfig().SaveData.SetValue(imageConfigs);
+    ImageFactory::Config::RemoveImage(imageConfig);
 }
 
 void ImageFactory::ImageManager::UpdateImage(UnityW<IFImage> image) {
@@ -156,28 +145,31 @@ void ImageFactory::ImageManager::UpdateImage(UnityW<IFImage> image) {
         return;
     }
 
-    auto imageConfigs = getPluginConfig().SaveData.GetValue();
-    auto& imageConfig = imageConfigs.at(indexOfImage);
+    auto imageConfig = ImageFactory::Config::GetConfigByImage(image);
+    if (!imageConfig) {
+        WARNING("ImageConfig not found for the image");
+        return;
+    }
 
-    imageConfig.Position = image->position;
-    imageConfig.Rotation = image->rotation;
-    imageConfig.Size = image->scale;
-    imageConfig.Name = image->name;
-    imageConfig.Presentation.PresentationID = image->presentationoption;
-    imageConfig.Enabled = image->enabled;
+    imageConfig->Position = image->position;
+    imageConfig->Rotation = image->rotation;
+    imageConfig->Size = image->scale;
+    imageConfig->Name = image->name;
+    imageConfig->Presentation.PresentationID = image->presentationoption;
+    imageConfig->Enabled = image->enabled;
 
     // TODO: Implement duration
-    imageConfig.Presentation.Duration = 0.0f;
+    imageConfig->Presentation.Duration = 0.0f;
 
     // Setup lookup dictionary for extra data.
     std::string extraData;
     for (std::pair<StringW, StringW> pair : *image->extraData) {
         extraData += static_cast<std::string>(pair.first) + "|" + static_cast<std::string>(pair.second) + "/";
     }
-    imageConfig.Presentation.Value = extraData;
+    imageConfig->Presentation.Value = extraData;
 
     // Save the updated config.
-    getPluginConfig().SaveData.SetValue(imageConfigs);
+    ImageFactory::Config::Save();
 }
 
 void ImageFactory::ImageManager::RemoveAllImages() {
@@ -186,7 +178,7 @@ void ImageFactory::ImageManager::RemoveAllImages() {
     }
 
     images->Clear();
-    getPluginConfig().SaveData.SetValue(std::vector<ImageConfig>());
+    ImageFactory::Config::ClearImages();
 }
 
 UnityW<ImageFactory::ImageManager> ImageFactory::ImageManager::get_instance(){

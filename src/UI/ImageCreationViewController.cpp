@@ -127,7 +127,7 @@ namespace ImageFactory::UI {
             levelBarLayoutElement->set_minWidth(1.0f);
 
             auto button = BSML::Lite::CreateUIButton(levelBarLayoutElement->get_transform(), "", Vector2(0.0f, 0.0f), Vector2(10.0f, 10.0f),
-                [=]() {
+                [this, image, img, fileSize, loadTime]() {
                     auto modal = BSML::Lite::CreateModal(get_transform(), Vector2(70.0f, 50.0f),
                         nullptr, true);
 

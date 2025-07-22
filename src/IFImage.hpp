@@ -26,7 +26,7 @@
 using namespace std;
 using namespace UnityEngine;
 
-DECLARE_CLASS_CODEGEN(ImageFactory, IFImage, UnityEngine::MonoBehaviour,
+DECLARE_CLASS_CODEGEN(ImageFactory, IFImage, UnityEngine::MonoBehaviour) {
     DECLARE_INSTANCE_METHOD(void, Create);
     DECLARE_INSTANCE_METHOD(void, Spawn, bool);
     DECLARE_INSTANCE_METHOD(void, Despawn, bool);
@@ -68,4 +68,4 @@ DECLARE_CLASS_CODEGEN(ImageFactory, IFImage, UnityEngine::MonoBehaviour,
         void SetImage();
         void SetExtraData(StringW key, StringW val);
         std::string GetExtraData(std::string key, std::string defaultVal);
-    )
+};

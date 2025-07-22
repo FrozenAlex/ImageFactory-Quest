@@ -18,19 +18,22 @@ add_compile_options(-frtti -fexceptions -fvisibility=hidden -fPIE -fPIC)
 # Include. Include order matters!
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/utils.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/qpm.cmake)
+# Kaleb's CMake includes
+include(${EXTERN_DIR}/includes/kaleb/shared/cmake/assets.cmake)
 
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "RELEASE" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo" OR ${CMAKE_BUILD_TYPE} STREQUAL "MinSizeRel")
-        # Better optimizations
-        add_compile_options(-O3)
+    message(STATUS "Building in release mode")
+    # Better optimizations
+    add_compile_options(-O3)
 
-        # LTO
-        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-        add_compile_options(-flto)
-endif()
-
-if(${CMAKE_BUILD_TYPE} STREQUAL "DEBUG" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-        add_compile_options(-g)
+    # LTO
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    add_compile_options(-flto)
+else()
+    message(STATUS "Building in debug mode")
+    # Debug options
+    add_compile_options(-O0 -g)
 endif()
 
 # Targets
@@ -44,9 +47,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/strip.cmake)
 # stop symbols leaking
 # TODO: Fix
 # add_link_options(-Wl, --exclude-libs, ALL)
-project( ImageFactory VERSION ${PACKAGE_VERSION})
-# Kaleb's CMake includes
-include(${EXTERN_DIR}/includes/kaleb/shared/cmake/assets.cmake)
+project(${COMPILE_ID} VERSION ${PACKAGE_VERSION})
 
 # Set COMPILE_ID for qpm purposes
 set(COMPILE_ID ${CMAKE_PROJECT_NAME})
@@ -55,31 +56,32 @@ set(COMPILE_ID ${CMAKE_PROJECT_NAME})
 RECURSE_FILES(cpp_file_list ${SOURCE_DIR}/*.cpp)
 RECURSE_FILES(c_file_list ${SOURCE_DIR}/*.c)
 
+RECURSE_FILES(inline_hook_c ${EXTERN_DIR}/includes/beatsaber-hook/shared/inline-hook/*.c)
+RECURSE_FILES(inline_hook_cpp ${EXTERN_DIR}/includes/beatsaber-hook/shared/inline-hook/*.cpp)
+
 add_library(
         ${CMAKE_PROJECT_NAME}
         SHARED
         ${cpp_file_list}
         ${c_file_list}
+        ${inline_hook_c}
+        ${inline_hook_cpp}
         "${CMAKE_CURRENT_SOURCE_DIR}/include/submodules/EasyGifReader/EasyGifReader.cpp"
 )
 
 # for inline hook
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -llog)
+
 
 # add assets
-add_assets(${COMPILE_ID}-assets STATIC ${CMAKE_CURRENT_LIST_DIR}/assets ${INCLUDE_DIR}/assets.hpp)
-target_link_libraries(${COMPILE_ID} PRIVATE -llog -lz  ${COMPILE_ID}-assets)
+add_assets(${CMAKE_PROJECT_NAME}-assets STATIC ${CMAKE_CURRENT_LIST_DIR}/assets ${INCLUDE_DIR}/assets.hpp)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -llog -lz ${CMAKE_PROJECT_NAME}-assets)
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${INCLUDE_DIR})
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${SHARED_DIR})
 # Custom includes
 target_include_directories(${COMPILE_ID} PRIVATE ${EXTERN_DIR}/includes/gif-lib/shared)
 target_include_directories(${COMPILE_ID} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/submodules/EasyGifReader/")
-# beatsaber hook inline hook
 
-# IDK why this is here
-# RECURSE_FILES(src_inline_hook_beatsaber_hook_local_extra_c ${EXTERN_DIR}/includes/beatsaber-hook/shared/inline-hook/*.c)
-# RECURSE_FILES(src_inline_hook_beatsaber_hook_local_extra_cpp ${EXTERN_DIR}/includes/beatsaber-hook/shared/inline-hook/*.cpp)
-
-target_sources(${COMPILE_ID} PRIVATE ${src_inline_hook_beatsaber_hook_local_extra_c})
-target_sources(${COMPILE_ID} PRIVATE ${src_inline_hook_beatsaber_hook_local_extra_cpp})
+# add src dir as include dir
+target_include_directories(${COMPILE_ID} PRIVATE ${SOURCE_DIR})
+target_include_directories(${COMPILE_ID} PRIVATE test/src)

@@ -10,7 +10,7 @@
 #include "IFImage.hpp"
 #include "PluginConfig.hpp"
 
-DECLARE_CLASS_CODEGEN(ImageFactory::UI, ImageEditingViewController, HMUI::ViewController,
+DECLARE_CLASS_CODEGEN(ImageFactory::UI, ImageEditingViewController, HMUI::ViewController) {
     DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::FindMethodUnsafe("HMUI", "ViewController", "DidActivate", 3), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
     DECLARE_INSTANCE_FIELD(GlobalNamespace::LoadingControl*, loadingControl);
     DECLARE_INSTANCE_FIELD(UnityEngine::Transform*, containerParent);
@@ -22,4 +22,4 @@ DECLARE_CLASS_CODEGEN(ImageFactory::UI, ImageEditingViewController, HMUI::ViewCo
     private:
         custom_types::Helpers::Coroutine SetupListElements(UnityEngine::Transform* parent);
         std::vector<UnityW<UnityEngine::GameObject>> elems;
-);
+};

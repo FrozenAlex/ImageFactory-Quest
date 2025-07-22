@@ -9,7 +9,7 @@
 #include "custom-types/shared/macros.hpp"
 #include "main.hpp"
 
-DECLARE_CLASS_CODEGEN(ImageFactory::UI, ImageCreatorViewController, HMUI::ViewController,
+DECLARE_CLASS_CODEGEN(ImageFactory::UI, ImageCreatorViewController, HMUI::ViewController) {
     DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::FindMethodUnsafe("HMUI", "ViewController", "DidActivate", 3), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
     DECLARE_OVERRIDE_METHOD(void, DidDeactivate, il2cpp_utils::FindMethodUnsafe("HMUI", "ViewController", "DidDeactivate", 2), bool removedFromHierarchy, bool screenSystemEnabling);
     DECLARE_INSTANCE_FIELD(bool, hasSaved); 
@@ -27,4 +27,4 @@ DECLARE_CLASS_CODEGEN(ImageFactory::UI, ImageCreatorViewController, HMUI::ViewCo
         void Initialize(StringW str);
         void ResetOptions(UnityEngine::Transform* parent);
         custom_types::Helpers::Coroutine UpdateImage();
-    );
+};

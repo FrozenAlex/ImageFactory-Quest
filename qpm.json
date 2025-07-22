@@ -43,7 +43,7 @@
   "dependencies": [
     {
       "id": "beatsaber-hook",
-      "versionRange": "^5.1.9",
+      "versionRange": "^6.4.2",
       "additionalData": {}
     },
     {
@@ -55,35 +55,30 @@
     },
     {
       "id": "custom-types",
-      "versionRange": "^0.17.10",
+      "versionRange": "^0.18.3",
       "additionalData": {}
     },
     {
       "id": "bs-cordl",
-      "versionRange": "^3700.0.0",
+      "versionRange": "4007.*",
       "additionalData": {}
     },
     {
       "id": "bsml",
-      "versionRange": "^0.4.43",
+      "versionRange": "^0.4.54",
       "additionalData": {}
     },
     {
       "id": "config-utils",
-      "versionRange": "^1.4.2",
+      "versionRange": "^2.0.3",
       "additionalData": {}
     },
     {
-      "id": "paper",
-      "versionRange": "^3.6.3",
+      "id": "paper2_scotland2",
+      "versionRange": "^4.6.4",
       "additionalData": {
         "private": true
       }
-    },
-    {
-      "id": "fmt",
-      "versionRange": "^10.0.0",
-      "additionalData": {}
     },
     {
       "id": "gif-lib",

@@ -6,10 +6,10 @@
   "author": "Optimus",
   "version": "${version}",
   "packageId": "com.beatgames.beatsaber",
-  "packageVersion": "1.37.0_9064817954",
-  "description": "Smoothes your Controller position while in menus to make it less shaky, making the UI easier to use, etc.",
-  "modFiles": ["${binary}"],
-  "lateModFiles": [],
+  "packageVersion": "1.40.7_7060",
+  "description": "Adds images and gifs to your Beat Saber",
+  "modFiles": [],
+  "lateModFiles": ["${binary}"],
   "libraryFiles": [],
   "fileCopies": []
 }

@@ -1,7 +1,9 @@
 # Run at end to link with project
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Android")
+
+
+# if (CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Android")
     cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL _setup_linux_strip_project())
-endif()
+# endif()
 
 function(_setup_linux_strip_project)
     # Strip debug symbols

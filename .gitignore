@@ -65,3 +65,4 @@ extern.cmake
 include/assets.hpp
 
 mod.json
+.cache

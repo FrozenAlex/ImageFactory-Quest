@@ -1,6 +1,7 @@
 #include "UI/ImageFactoryViewController.hpp"
 
 #include "IFImage.hpp"
+#include "ImageManager.hpp"
 #include "PluginConfig.hpp"
 #include "Utils/UIUtils.hpp"
 #include "HMUI/Touchable.hpp"
@@ -8,6 +9,7 @@
 #include "UnityEngine/Vector2.hpp"
 #include "Presenters/PresenterManager.hpp"
 #include "assets.hpp"
+#include "ConfigManager.hpp"
 
 DEFINE_TYPE(ImageFactory::UI, ImageFactoryViewController);
 
@@ -73,7 +75,11 @@ namespace ImageFactory::UI {
             BSML::Lite::AddHoverHint(sButton, "Global Mod Settings");
 
             auto rButton = BSML::Lite::CreateClickableImage(this, reset, [=](){
-                Config::Reset();
+                auto imageManager = ImageFactory::ImageManager::get_instance();
+                if (imageManager) {
+                    imageManager->RemoveAllImages();
+                }
+                ImageFactory::Config::Reset();
             },  {-35.0f, 0.0f}, {18.0f, 18.0f});
 
             rButton->set_preserveAspect(true);
@@ -94,7 +100,7 @@ namespace ImageFactory::UI {
             BSML::Lite::AddHoverHint(hButton, "Help and Tutorial");
 
 
-            auto oButton = BSML::Lite::CreateClickableImage(this, optimus, [=](){
+            auto oButton = BSML::Lite::CreateClickableImage(this, optimus, [this, optimus](){
                 CreateModal(optimus, "sum random guy named optimus ported this mod to quest", this->get_transform(),
                             "Optimus", "Github Link", [=](HMUI::ModalView* modal){
                                 UnityEngine_Application_OpenURL("https://github.com/OptimusChen");
@@ -102,7 +108,7 @@ namespace ImageFactory::UI {
             },  {35.0f, -20.0f}, {18.0f, 18.0f});
             BSML::Lite::AddHoverHint(oButton, "The mod creator!");
 
-            auto bButton = BSML::Lite::CreateClickableImage(this, bandoot, [=](){
+            auto bButton = BSML::Lite::CreateClickableImage(this, bandoot, [this, bandoot](){
                 CreateModal(bandoot, "Bandoot commissioned for the original PC ImageFactory mod to\nbe made, go check him out!", this->get_transform(),
                             "Bandoot", "Twitch Link", [=](HMUI::ModalView* modal){
                                 UnityEngine_Application_OpenURL("https://www.twitch.tv/bandoot");
@@ -110,7 +116,7 @@ namespace ImageFactory::UI {
             }, {35.0f, 0.0f}, {18.0f, 18.0f});
             BSML::Lite::AddHoverHint(bButton, "The mod commissioner!");
 
-            auto gButton = BSML::Lite::CreateClickableImage(this, github,  [=](){
+            auto gButton = BSML::Lite::CreateClickableImage(this, github,  [this, github](){
                 CreateModal(github, "ImageFactory is open source! You can view it on GitHub. Have a\nbug report or a feature request? Submit an issue on GitHub.", this->get_transform(),
                             "Github", "Github Link", [=](HMUI::ModalView* modal){
                                 UnityEngine_Application_OpenURL("https://github.com/OptimusChen/ImageFactory-Quest");
