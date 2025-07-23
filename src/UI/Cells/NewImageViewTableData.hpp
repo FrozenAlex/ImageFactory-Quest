@@ -4,6 +4,7 @@
 #include "bsml/shared/BSML.hpp"
 #include "HMUI/Touchable.hpp"
 #include "UI/Cells/NewImageViewCell.hpp"
+#include "logging.hpp"
 
 
 std::string const ReuseIdentifier = "REUSENewImageViewCell";
@@ -18,7 +19,6 @@ namespace ImageFactory::UI::Cells {
                 tableCell->set_interactable(true);
                 tableCell->set_reuseIdentifier(ReuseIdentifier);
                 BSML::parse_and_construct(Assets::new_image_view_cell_bsml, tableCell->get_transform(), tableCell);
-
                 // Weird hack cause HMUI touchable is not there for some reason
                 tableCell->get_gameObject()->AddComponent<HMUI::Touchable*>();
             }

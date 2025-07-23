@@ -23,6 +23,7 @@
 #include "bsml/shared/Helpers/utilities.hpp"
 #include "HMUI/ScrollView.hpp"
 #include "UI/Cells/NewImageViewTableData.hpp"
+
 DEFINE_TYPE(ImageFactory::UI, NewImageView);
 
 using namespace GlobalNamespace;
@@ -53,10 +54,6 @@ namespace ImageFactory::UI {
                 fileWatcher->checkInterval = 0.5f;
             #endif
 
-            if (imageTableData) {
-                imageTableData->tableView->SetDataSource(reinterpret_cast<HMUI::TableView::IDataSource*>(this), false);
-            }
-
             this->StartCoroutine(
                 custom_types::Helpers::CoroutineHelper::New(
                     SetupListElements()
@@ -68,18 +65,29 @@ namespace ImageFactory::UI {
     void NewImageView::PostParse() {
         // This method can be used to perform additional setup after the BSML has been parsed.
         // For example, you can set up event listeners or modify UI elements here.
+        if (imageTableData) {
+            imageTableData->tableView->SetDataSource(reinterpret_cast<HMUI::TableView::IDataSource*>(this), false);
+            imageTableData->tableView->ReloadData();
+        }
     }
 
     float NewImageView::CellSize() {
+        DEBUG("NewImageView::CellSize called, returning cell size:");
         return imageTableData->CellSize();
     }
 
     int NewImageView::NumberOfCells() {
-        return 12; // TODO: return the number of images in the directory
+        DEBUG("NewImageView::NumberOfCells called, imagesList size: {}", imagesList.size());
+        return imagesList.size();
     }
 
     HMUI::TableCell* NewImageView::CellForIdx(HMUI::TableView* tableView, int idx) {
-        return Cells::NewImageViewTableData::GetCell(tableView);
+        DEBUG("NewImageView::CellForIdx called with idx: {}", idx);
+        if (idx < 0 || idx >= imagesList.size()) {
+            ERROR("Index out of bounds: {}", idx);
+            return nullptr; // Return nullptr to indicate an invalid cell
+        }
+        return Cells::NewImageViewTableData::GetCell(tableView)->PopulateWithImageData(imagesList[idx]);
     }
 
     void NewImageView::PageUp() {
@@ -95,6 +103,31 @@ namespace ImageFactory::UI {
 
     custom_types::Helpers::Coroutine NewImageView::SetupListElements(){
         std::vector<std::string> images = FileUtils::getFiles("/sdcard/ModData/com.beatgames.beatsaber/Mods/ImageFactory/Images/");
+
+        if (images.empty()) {
+            DEBUG("No images found in folder!");
+            loadingRoot->get_gameObject()->SetActive(true);
+            loadingText->set_text("No images found in folder!\n/sdCard/ModData/com.beatgames/Mods/ImageFactory/Images/");
+            co_return;
+        }
+        DEBUG("Found {} images in folder!", images.size());
+        for (int i = 0; i < images.size(); i++) {
+            auto image = images.at(i);
+            DEBUG("Loading image: {}", image);
+
+            auto imageData = std::make_shared<ImageFactory::Models::IFSourceImage>();
+            System::IO::FileStream* stream = System::IO::FileStream::New_ctor(image, System::IO::FileMode::Open, ::System::IO::FileAccess::Read);
+            auto fileSize = stream->get_Length();
+            imageData->path = image;
+            imageData->fileName = FileUtils::GetFileName(image, false);
+            imageData->size = "File Size: " +
+                        StringUtils::removeTrailingZeros(round(fileSize / FileUtils::FileSizeDivisor(fileSize))) +
+                         " " + FileUtils::FileSizeExtension(fileSize);
+            imageData->animated = FileUtils::isGifFile(image);
+            imagesList.push_back(imageData);
+            stream->Close();
+        }
+
 
         // // Show loading screen and hide the selection root
         // loadingRoot->get_gameObject()->SetActive(true);
@@ -222,6 +255,11 @@ namespace ImageFactory::UI {
         // } else {
         //     loadingRoot->get_gameObject()->SetActive(false);
         // }
+        // Reload data for the table view
+        if (imagesTable()) {
+            imagesTable()->get_gameObject()->SetActive(true);
+            imagesTable()->ReloadData();
+        }
         co_return;
     }
 }

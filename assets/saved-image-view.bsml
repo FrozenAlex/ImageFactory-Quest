@@ -4,7 +4,7 @@
         <text text="Edit Images" align="Center" font-size="7" />
       </horizontal>
       <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="90" pref-height="60">
-        <list id="imageTableData" cell-size="10" pref-width="80" pref-height="60" visible-cells="6"/>
+        <list id="imageTableData" cell-size="10" pref-width="80" pref-height="60" visible-cells="6" stick-scrolling="true" />
         <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="10" pref-height="100">
           <page-button id="up-button" dir="Up" pref-width="10" on-click="PageUp" />
           <page-button id="down-button" dir="Down" pref-width="10" on-click="PageDown" />

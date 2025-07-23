@@ -53,10 +53,6 @@ namespace ImageFactory::UI {
                 fileWatcher->checkInterval = 0.5f;
             #endif
 
-            if (imageTableData) {
-                imageTableData->tableView->SetDataSource(reinterpret_cast<HMUI::TableView::IDataSource*>(this), false);
-            }
-            
             DEBUG("SavedImageView::DidActivate called");
             StartCoroutine(
                 custom_types::Helpers::new_coro(
@@ -73,6 +69,10 @@ namespace ImageFactory::UI {
     void SavedImageView::PostParse() {
         // This method can be used to perform additional setup after the BSML has been parsed.
         // For example, you can set up event listeners or modify UI elements here.
+        if (imageTableData) {
+            imageTableData->tableView->SetDataSource(reinterpret_cast<HMUI::TableView::IDataSource*>(this), false);
+            imageTableData->tableView->ReloadData();
+        }
     }
 
     float SavedImageView::CellSize() {

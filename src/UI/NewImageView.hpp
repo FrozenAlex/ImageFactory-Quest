@@ -7,13 +7,16 @@
 
 #include "GlobalNamespace/LoadingControl.hpp"
 #include "HMUI/ImageView.hpp"
+#include <list>
 #include <map>
+#include <memory>
+#include <optional>
+#include <vector>
 #include "bsml/shared/BSML/Components/HotReloadFileWatcher.hpp"
 #include "bsml/shared/BSML/Components/CustomListTableData.hpp"
 #include "UnityEngine/UI/HorizontalOrVerticalLayoutGroup.hpp"
 #include "HMUI/CurvedTextMeshPro.hpp"
-
-
+#include "Models/IFSourceImage.hpp"
 DECLARE_CLASS_CODEGEN_INTERFACES(ImageFactory::UI, NewImageView, HMUI::ViewController, HMUI::TableView::IDataSource*) {
 
     DECLARE_OVERRIDE_METHOD_MATCH(void, DidActivate, &HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHeirarchy, bool screenSystemDisabling);
@@ -38,4 +41,7 @@ DECLARE_CLASS_CODEGEN_INTERFACES(ImageFactory::UI, NewImageView, HMUI::ViewContr
     private:
         UnityW<HMUI::TableView> imagesTable() {if(imageTableData) {return imageTableData->tableView;} else return nullptr;}
         custom_types::Helpers::Coroutine SetupListElements();
+        
+        std::vector<std::shared_ptr<ImageFactory::Models::IFSourceImage>> imagesList;
+        std::optional<std::shared_ptr<ImageFactory::Models::IFSourceImage>> selectedImage;
 };

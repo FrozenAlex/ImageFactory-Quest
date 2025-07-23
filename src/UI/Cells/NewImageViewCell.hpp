@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+#include <optional>
 #include "UnityEngine/MonoBehaviour.hpp"
 #include "UnityEngine/UI/VerticalLayoutGroup.hpp"
 #include "custom-types/shared/macros.hpp"
@@ -11,18 +13,18 @@
 #include "bsml/shared/macros.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "bsml/shared/BSML/Components/CustomListTableData.hpp"
-
+#include "Models/IFSourceImage.hpp"
+#include "UnityEngine/UI/Image.hpp"
 
 DECLARE_CLASS_CODEGEN(ImageFactory::UI::Cells, NewImageViewCell, HMUI::TableCell) {
     DECLARE_OVERRIDE_METHOD_MATCH(void, SelectionDidChange, &HMUI::SelectableCell::SelectionDidChange, HMUI::SelectableCell::TransitionType transitionType);
     DECLARE_OVERRIDE_METHOD_MATCH(void, HighlightDidChange, &HMUI::SelectableCell::HighlightDidChange, HMUI::SelectableCell::TransitionType transitionType);
     DECLARE_OVERRIDE_METHOD_MATCH(void, WasPreparedForReuse, &HMUI::TableCell::WasPreparedForReuse);
-    DECLARE_INSTANCE_FIELD(HMUI::ImageView*, preview);
-    DECLARE_INSTANCE_FIELD(TMPro::TextMeshProUGUI*, fileName);
+    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::UI::Image>, preview);
+    DECLARE_INSTANCE_FIELD(UnityW<TMPro::TextMeshProUGUI>, fileName);
 
     DECLARE_INSTANCE_METHOD(void, ClickedCreateButton);
 public:
-    // DownloadHistoryEntry* entry;
-
-    // NewImageViewCell* PopulateWithImageData(DownloadHistoryEntry* entry);
+    std::optional<std::shared_ptr<ImageFactory::Models::IFSourceImage>> imageData;
+    NewImageViewCell* PopulateWithImageData(std::shared_ptr<ImageFactory::Models::IFSourceImage> image);
 };
