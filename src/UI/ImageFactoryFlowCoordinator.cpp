@@ -1,7 +1,7 @@
 #include "UI/ImageFactoryFlowCoordinator.hpp"
 
 #include "Presenters/PresenterManager.hpp"
-#include "UI/ImageCreatorViewController.hpp"
+#include "UI/EditImageView.hpp"
 #include "HMUI/ViewController.hpp"
 #include "bsml/shared/Helpers/creation.hpp"
 
@@ -19,16 +19,16 @@ namespace ImageFactory::UI {
             SetTitle("IMAGEFACTORY", ViewController::AnimationType::In);
             showBackButton = true;
 
-            imageCreationViewController = reinterpret_cast<ImageCreationViewController*>(BSML::Helpers::CreateViewController<ImageCreationViewController*>());
-            imageEditingViewController = reinterpret_cast<ImageEditingViewController*>(BSML::Helpers::CreateViewController<ImageEditingViewController*>());
-            imageFactoryViewController = reinterpret_cast<ImageFactoryViewController*>(BSML::Helpers::CreateViewController<ImageFactoryViewController*>());
+            imageCreationViewController = reinterpret_cast<NewImageView*>(BSML::Helpers::CreateViewController<NewImageView*>());
+            imageEditingViewController = reinterpret_cast<SavedImageView*>(BSML::Helpers::CreateViewController<SavedImageView*>());
+            imageFactoryViewController = reinterpret_cast<InfoView*>(BSML::Helpers::CreateViewController<InfoView*>());
         
             ProvideInitialViewControllers(imageFactoryViewController, imageCreationViewController, imageEditingViewController, nullptr, nullptr);
         }             
     }
 
     void ImageFactoryFlowCoordinator::CreateImage(StringW path) {
-        ImageCreatorViewController* viewController = reinterpret_cast<ImageCreatorViewController*>(BSML::Helpers::CreateViewController<ImageCreatorViewController*>());
+        EditImageView* viewController = reinterpret_cast<EditImageView*>(BSML::Helpers::CreateViewController<EditImageView*>());
 
         if (!viewController) return;
 
@@ -52,7 +52,7 @@ namespace ImageFactory::UI {
     }
 
     void ImageFactoryFlowCoordinator::EditImage(IFImage* image, TMPro::TextMeshProUGUI* text) {
-        ImageCreatorViewController* viewController = reinterpret_cast<ImageCreatorViewController*>(BSML::Helpers::CreateViewController<ImageCreatorViewController*>());
+        EditImageView* viewController = reinterpret_cast<EditImageView*>(BSML::Helpers::CreateViewController<EditImageView*>());
 
         if (!viewController) return;
 

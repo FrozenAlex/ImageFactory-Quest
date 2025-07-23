@@ -7,11 +7,20 @@
 #include "UnityEngine/Coroutine.hpp"
 #include "custom-types/shared/coroutine.hpp"
 #include "custom-types/shared/macros.hpp"
-#include "main.hpp"
+#include "bsml/shared/BSML/Components/HotReloadFileWatcher.hpp"
 
-DECLARE_CLASS_CODEGEN(ImageFactory::UI, ImageCreatorViewController, HMUI::ViewController) {
-    DECLARE_OVERRIDE_METHOD(void, DidActivate, il2cpp_utils::FindMethodUnsafe("HMUI", "ViewController", "DidActivate", 3), bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
-    DECLARE_OVERRIDE_METHOD(void, DidDeactivate, il2cpp_utils::FindMethodUnsafe("HMUI", "ViewController", "DidDeactivate", 2), bool removedFromHierarchy, bool screenSystemEnabling);
+DECLARE_CLASS_CODEGEN(ImageFactory::UI, EditImageView, HMUI::ViewController) {
+    #ifdef HotReload
+    DECLARE_INSTANCE_FIELD(BSML::HotReloadFileWatcher*, fileWatcher);
+    #endif
+    
+    DECLARE_INSTANCE_METHOD(void, PostParse);
+    DECLARE_OVERRIDE_METHOD_MATCH(
+        void, DidActivate, &HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHeirarchy, bool screenSystemDisabling
+    );
+    DECLARE_OVERRIDE_METHOD_MATCH(
+        void, DidDeactivate, &HMUI::ViewController::DidDeactivate, bool removedFromHierarchy, bool screenSystemEnabling
+    );
     DECLARE_INSTANCE_FIELD(bool, hasSaved); 
     DECLARE_INSTANCE_FIELD(bool, editing); 
     DECLARE_INSTANCE_FIELD(IFImage*, image);

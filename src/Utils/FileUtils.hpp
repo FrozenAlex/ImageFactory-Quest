@@ -16,5 +16,6 @@ namespace FileUtils {
     long GetFileSize(std::string_view filename, System::IO::FileStream* stream);
     int FileSizeDivisor(long size);
     std::string FileSizeExtension(long size);
-;
+    std::string FullImagePath(std::string_view localPath);
+    std::string RelativeImagePath(std::string_view fullPath);
 }  

@@ -6,8 +6,10 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
+#include "PluginConfig.hpp"
 
+using namespace std;
+namespace fs = std::filesystem;
 namespace FileUtils {
 
   std::vector<std::string> getFiles(std::string_view path) {
@@ -79,5 +81,42 @@ namespace FileUtils {
 
   long GetFileSize(std::string_view filename, System::IO::FileStream* stream) {
     return stream->get_Length();
+  }
+
+  /**
+   * @brief Get the Full Image Path object
+   * 
+   * @param localPath 
+   * @return std::string 
+   */
+  std::string FullImagePath(std::string_view localPath) {
+    if (localPath.empty()) {
+      return "";
+    }
+    if (localPath.starts_with(IMAGE_FACTORY_IMAGES_PATH)) {
+      return std::string(localPath);
+    }
+    std::filesystem::path imagePath(IMAGE_FACTORY_IMAGES_PATH);
+    imagePath /= localPath;
+    
+    return imagePath;
+  }
+
+  /**
+   * @brief Get the Relative Local Image Path object
+   * 
+   * @param fileName 
+   * @return std::string 
+   */
+  std::string RelativeImagePath(std::string_view fullPath) {
+    if (fullPath.empty()) {
+      return "";
+    }
+    if (fullPath.starts_with(IMAGE_FACTORY_IMAGES_PATH)) {
+      return std::string(fullPath.substr(IMAGE_FACTORY_IMAGES_PATH.size()));
+    }
+    std::filesystem::path imagePath(IMAGE_FACTORY_IMAGES_PATH);
+    imagePath /= fullPath;
+    return imagePath.string();
   }
 }

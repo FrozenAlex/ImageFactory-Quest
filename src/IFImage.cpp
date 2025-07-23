@@ -1,6 +1,4 @@
 #include "IFImage.hpp"
-
-#include "main.hpp"
 #include "PluginConfig.hpp"
 #include "Utils/FileUtils.hpp"
 #include "Utils/UIUtils.hpp"
@@ -36,12 +34,16 @@ namespace ImageFactory {
                  rotation.eulerAngles,
                  0.0f,
                  false,
-                 true
+                 true,
+                 BSML::Side::Bottom
          );
         screenGO = screen->get_gameObject();
         image = BSML::Lite::CreateImage(screen->get_transform(), sprite, {position.x, position.y}, {scale.x * (width / 3), scale.y * (height / 3)});
-        Object::DontDestroyOnLoad(screen);
-        Object::DontDestroyOnLoad(image);
+        if (screen && image) {
+            Object::DontDestroyOnLoad(screen);
+            Object::DontDestroyOnLoad(image);
+        }
+        
 
         screenGO->set_active(false);
         hasBeenCreated = true;
@@ -96,7 +98,12 @@ namespace ImageFactory {
         screenGO->set_active(false);
     }
 
-    void IFImage::Update(bool handle) {
+    /**
+     * @brief Updates the image on the screen.
+     * 
+     * @param handle 
+     */
+    void IFImage::UpdateImage(bool handle) {
         if (!enabled) {
             Despawn(false);
             return;
@@ -111,10 +118,9 @@ namespace ImageFactory {
         }
 
         screen->set_ScreenSize({scale.x * (width / 3), scale.y * (height / 3)});
-        screen->set_ShowHandle(handle);
         screen->set_HandleSide(BSML::Side::Full);
-//        floating->get_handle()->set_active(handle);
-
+        screen->set_ShowHandle(handle);
+        
         screen->get_transform()->set_position(oldPos);
         screen->get_transform()->set_rotation(oldRot);
 
@@ -253,10 +259,11 @@ namespace ImageFactory {
         enabled = true;
         presentationoption = "Everywhere";
         inSong = false;
-        fileName = FileUtils::GetFileName(p, false);
-        path = static_cast<std::string>(p);
+        fileName = FileUtils::RelativeImagePath((std::string) p);
+        path = static_cast<std::string>(FileUtils::FullImagePath((std::string ) p));
         extraData = new std::unordered_map<std::string, std::string>();
         canAnimate = false;
+        internalName = FileUtils::GetFileName(p, false);
         isAnimated = FileUtils::isGifFile(path);
 
         if (FileUtils::isGifFile(path)) {
@@ -269,7 +276,9 @@ namespace ImageFactory {
         }
         
         Create();
-        Update(true);
+        UpdateImage(true);
+
+        // Set image from 
         SetImage();
     }
 }

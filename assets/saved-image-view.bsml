@@ -1,0 +1,18 @@
+<bg  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+    <vertical id="selectionRoot" active="true" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+      <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="90" pref-height="10" bg="panel-top">
+        <text text="Edit Images" align="Center" font-size="7" />
+      </horizontal>
+      <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="90" pref-height="60">
+        <list id="imageTableData" cell-size="10" pref-width="80" pref-height="60" visible-cells="6"/>
+        <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="10" pref-height="100">
+          <page-button id="up-button" dir="Up" pref-width="10" on-click="PageUp" />
+          <page-button id="down-button" dir="Down" pref-width="10" on-click="PageDown" />
+        </vertical>
+      </horizontal>
+    </vertical>
+    <vertical id="loadingRoot" active="true" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+      <loading pref-width="30" pref-height="30" />
+      <text id="loadingText" text="Loading Saves..." align="Center" font-size="5" />
+    </vertical>
+  </bg>

@@ -1,9 +1,9 @@
-#include "main.hpp"
-
 #include "GlobalNamespace/MenuTransitionsHelper.hpp"
 #include "Presenters/PresenterManager.hpp"
 #include "Presenters/Presenter.hpp"
 #include "logging.hpp"
+#include "beatsaber-hook/shared/utils/hooking.hpp"
+#include "Hooks.hpp"
 using namespace GlobalNamespace;
 
 namespace ImageFactory {

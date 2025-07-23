@@ -1,6 +1,4 @@
 #include "Presenters/PresenterManager.hpp"
-
-#include "main.hpp"
 #include "GlobalNamespace/MainMenuViewController.hpp"
 #include "GlobalNamespace/ResultsViewController.hpp"
 #include "GlobalNamespace/AudioTimeSyncController.hpp"
@@ -8,7 +6,8 @@
 #include "GlobalNamespace/PauseController.hpp"
 #include "GlobalNamespace/PauseMenuManager.hpp"
 #include "logging.hpp"
-
+#include "beatsaber-hook/shared/utils/hooking.hpp"
+#include "Hooks.hpp"
 using namespace GlobalNamespace;
 
 namespace ImageFactory::Presenters {

@@ -20,7 +20,6 @@
 #include "EasyGifReader.h"
 #include "PluginConfig.hpp"
 #include "assets.hpp"
-#include "main.hpp"
 #include <map>
 
 using namespace HMUI;

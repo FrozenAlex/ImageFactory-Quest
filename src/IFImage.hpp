@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "HMUI/ImageView.hpp"
 #include "HMUI/Touchable.hpp"
 #include "System/TimeSpan.hpp"
@@ -22,6 +23,7 @@
 #include "bsml/shared/BSML/FloatingScreen/FloatingScreen.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "Tweening/TimeTweeningManager.hpp"
+#include "PluginConfig.hpp"
 
 using namespace std;
 using namespace UnityEngine;
@@ -30,7 +32,7 @@ DECLARE_CLASS_CODEGEN(ImageFactory, IFImage, UnityEngine::MonoBehaviour) {
     DECLARE_INSTANCE_METHOD(void, Create);
     DECLARE_INSTANCE_METHOD(void, Spawn, bool);
     DECLARE_INSTANCE_METHOD(void, Despawn, bool);
-    DECLARE_INSTANCE_METHOD(void, Update, bool); 
+    DECLARE_INSTANCE_METHOD(void, UpdateImage, bool); 
     DECLARE_INSTANCE_METHOD(void, Destroy); 
     DECLARE_INSTANCE_METHOD(Vector2, get_size);
     DECLARE_INSTANCE_METHOD(void, set_size, UnityEngine::Vector2); 
@@ -57,12 +59,20 @@ DECLARE_CLASS_CODEGEN(ImageFactory, IFImage, UnityEngine::MonoBehaviour) {
     DECLARE_CTOR(ctor, UnityW<Sprite> sprite, StringW path);
     
     public:
+        /**
+        * @brief Link to the image config.
+        */
+        std::optional<shared_ptr<ImageConfig>> config;
+
         std::string name;
         std::unordered_map<std::string, std::string>* extraData;
-        StringW internalName; 
-        StringW fileName; 
+        std::string internalName;
+        std::string fileName;
+        /**
+         * @brief Path to the image file relative to the Images folder.
+         */
         std::string path;
-        std::string presentationoption; 
+        std::string presentationoption;
         bool enabled;
         custom_types::Helpers::Coroutine SetImage(std::function<void()> onFinished);
         void SetImage();

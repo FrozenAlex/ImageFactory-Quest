@@ -1,0 +1,14 @@
+{
+  "name": "imagefactory",
+  "version": "1.0.0",
+  "description": "Mod to add images and gifs to Beat Saber",
+  "main": "index.js",
+  "scripts": {
+    "watch": "node watch-templates.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chokidar": "^3.6.0"
+  }
+}

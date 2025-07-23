@@ -1,0 +1,12 @@
+<horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="80" pref-height="10" xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+  <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="9" pref-height="9">
+    <image id="preview" preserve-aspect="true" />
+  </vertical>
+  <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="45" pref-height="9">
+    <text id="saveName" align="Left" />
+  </vertical>
+  <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="25" pref-height="9">
+    <button text="❌" pref-width="12" pref-height="9" on-click="ClickedDeleteButton" face-color="red" />
+    <button text="↩" pref-width="12" pref-height="9" on-click="ClickedEditButton" />
+  </horizontal>
+</horizontal>

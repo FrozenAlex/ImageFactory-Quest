@@ -2,22 +2,12 @@
 
 #include "IFImage.hpp"
 #include "PluginConfig.hpp"
-#include "beatsaber-hook/shared/utils/hooking.hpp"
 #include "UI/ImageFactoryFlowCoordinator.hpp"
 #include "logging.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "logging.hpp"
+#include "Hooks.hpp"
 using namespace ImageFactory;
-
-void ImageFactory::InstallHooks() {
-    Hooks::LoadImagesHook();
-    Hooks::MenuTransitionsHelper();
-    Presenters::ComboHooks();
-    Presenters::PercentHooks();
-    Presenters::PresenterHooks();
-    Presenters::LastNoteHooks();
-    Presenters::ResultsHooks();
-}
 
 void makeFolders() {
     std::string dataFolder = IMAGE_FACTORY_PATH;

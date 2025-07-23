@@ -34,7 +34,12 @@ else()
     message(STATUS "Building in debug mode")
     # Debug options
     add_compile_options(-O0 -g)
+    
+
 endif()
+
+# Hot reload (for development only)
+add_compile_options(-DHotReload)
 
 # Targets
 if(QUEST)
@@ -47,10 +52,11 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/strip.cmake)
 # stop symbols leaking
 # TODO: Fix
 # add_link_options(-Wl, --exclude-libs, ALL)
-project(${COMPILE_ID} VERSION ${PACKAGE_VERSION})
-
 # Set COMPILE_ID for qpm purposes
 set(COMPILE_ID ${CMAKE_PROJECT_NAME})
+
+project(ImageFactory VERSION ${PACKAGE_VERSION})
+
 
 # recursively get all src files
 RECURSE_FILES(cpp_file_list ${SOURCE_DIR}/*.cpp)
@@ -79,9 +85,9 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE -llog -lz ${CMAKE_PROJECT_NA
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${INCLUDE_DIR})
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${SHARED_DIR})
 # Custom includes
-target_include_directories(${COMPILE_ID} PRIVATE ${EXTERN_DIR}/includes/gif-lib/shared)
-target_include_directories(${COMPILE_ID} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/submodules/EasyGifReader/")
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${EXTERN_DIR}/includes/gif-lib/shared)
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/submodules/EasyGifReader/")
 
 # add src dir as include dir
-target_include_directories(${COMPILE_ID} PRIVATE ${SOURCE_DIR})
-target_include_directories(${COMPILE_ID} PRIVATE test/src)
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${SOURCE_DIR})
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE test/src)

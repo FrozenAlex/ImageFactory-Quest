@@ -1,7 +1,6 @@
 #pragma once
 
 #include "beatsaber-hook/shared/utils/typedefs-string.hpp"
-#include "main.hpp"
 #include "IFImage.hpp"
 #include "Utils/UIUtils.hpp"
 #include "UnityEngine/GameObject.hpp"

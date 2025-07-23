@@ -1,0 +1,41 @@
+<bg  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd'>
+    <vertical id="selectionRoot" active="true" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+      <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="90" pref-height="10" bg="panel-top">
+        <text text="New Image" align="Center" font-size="7" />
+      </horizontal>
+      <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="90" pref-height="60">
+        <list id="imageTableData" cell-size="10" pref-width="80" pref-height="60" visible-cells="6"/>
+        <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="10" pref-height="100">
+          <page-button id="up-button" dir="Up" pref-width="10" on-click="PageUp" />
+          <page-button id="down-button" dir="Down" pref-width="10" on-click="PageDown" />
+        </vertical>
+      </horizontal>
+    </vertical>
+
+    <vertical id="loadingRoot" active="false" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+      <loading pref-width="30" pref-height="30" />
+      <text id="loadingText" text="Loading Images..." align="Center" font-size="5" />
+    </vertical>
+   
+    <modal id="imageDetailsModal" active="false" size-delta-x="62" size-delta-y="42" clickerino-offerino-closerino="true">
+      <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="60" pref-height="40">
+        <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="60" pref-height="30">
+          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="30" pref-height="30">
+            <image id="preview" pref-width="27" pref-height="27" preserve-aspect="true" />
+          </vertical>
+          <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="30" pref-height="30" pad="2">
+            <text id="animText" text="Animated: No" align="Left" />
+            <text id="widthText" text="Width: 512px" align="Left" />
+            <text id="heightText" text="Height: 512px" align="Left" />
+            <text id="fileSizeText" text="File Size: 51 KB" align="Left" />
+            <text id="loadTimeText" text="Load Time: 236 ms" align="Left" />
+          </vertical>
+        </horizontal>
+        <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="60" pref-height="10">
+          <button text="Cancel" pref-width="25" pref-height="8" on-click="hide-modal" />
+          <button text="Create" pref-width="25" pref-height="8" on-click="create-clicked" />
+        </horizontal>
+      </vertical>
+    </modal>
+
+  </bg>

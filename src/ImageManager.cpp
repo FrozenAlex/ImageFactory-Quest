@@ -1,4 +1,5 @@
 #include "ImageManager.hpp"
+#include "PluginConfig.hpp"
 #include "logging.hpp"
 #include "Presenters/PresenterManager.hpp"
 #include "Utils/StringUtils.hpp"
@@ -18,6 +19,11 @@ DEFINE_TYPE(ImageFactory, ImageManager);
 custom_types::Helpers::Coroutine ImageFactory::ImageManager::LoadImages() {
     // Parse images and Loop through each image
     INFO("Loading images...");
+
+    // Initialize the images list if not already done.
+    if (!images) {
+        images = ListW<UnityW<IFImage>>::New();
+    }
     ImageFactory::Config::Load();
 
     auto imageConfigs = ImageFactory::Config::getImageConfigsList();
@@ -58,6 +64,7 @@ custom_types::Helpers::Coroutine ImageFactory::ImageManager::LoadImages() {
         image->extraData = new std::unordered_map<std::string, std::string>();
         image->isAnimated = FileUtils::isGifFile(image->path);
         image->canAnimate = false;
+        image->internalName = imageConfig->LocalFilePath.value_or("");
 
         // Setup lookup dictionary for extra data.
         StringW extraData = imageConfig->Presentation.Value.value_or("");
@@ -84,7 +91,7 @@ custom_types::Helpers::Coroutine ImageFactory::ImageManager::LoadImages() {
         }
 
         image->Create();
-        image->Update(false);
+        image->UpdateImage(false);
         image->Despawn(false);
 
         // Add image to the ImageManager list.
@@ -115,12 +122,29 @@ custom_types::Helpers::Coroutine ImageFactory::ImageManager::LoadImages() {
 }
 
 void ImageFactory::ImageManager::AddImage(UnityW<IFImage> image) {
+    if (!images) {
+        images = ListW<UnityW<IFImage>>::New();
+    }
     images->Add(image);
 }
 
 void ImageFactory::ImageManager::AddNewImage(UnityW<IFImage> image) {
+    if (!images) {
+        images = ListW<UnityW<IFImage>>::New();
+    }
     // TODO: Add the image to config too
-    images->Add(image);
+    auto imageConfig = ImageConfig();
+    imageConfig.LocalFilePath = image->fileName;
+    imageConfig.Position = image->position;
+    imageConfig.Rotation = image->rotation;
+    imageConfig.Size = image->scale;
+    imageConfig.Name = image->name;
+    imageConfig.Presentation.PresentationID = image->presentationoption;
+    imageConfig.Enabled = image->enabled;
+    imageConfig.Presentation.Duration = 0.0f; // TODO: Implement duration
+
+    auto config = ImageFactory::Config::AddImage(imageConfig);
+    ImageFactory::Config::AttachImageToConfig(image, config);
 }
 
 void ImageFactory::ImageManager::RemoveImage(UnityW<IFImage> image) {

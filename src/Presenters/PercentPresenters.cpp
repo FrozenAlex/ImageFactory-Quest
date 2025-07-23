@@ -1,5 +1,3 @@
-#include "main.hpp"
-
 #include "Presenters/PresenterManager.hpp"
 #include "Utils/StringUtils.hpp"
 #include "Presenters/PercentPresenters.hpp"
@@ -7,7 +5,10 @@
 #include "GlobalNamespace/RelativeScoreAndImmediateRankCounter.hpp"
 #include "System/Action.hpp"
 #include "logging.hpp"
-
+#include "GlobalNamespace/ScoreController.hpp"
+#include "beatsaber-hook/shared/utils/hooking.hpp"
+#include "Hooks.hpp"
+using namespace GlobalNamespace;
 namespace ImageFactory::Presenters {
     std::vector<std::string_view> dropdownOptions = {
         "Below", "Above"

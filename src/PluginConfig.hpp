@@ -6,7 +6,6 @@
 #include "UnityEngine/Vector4.hpp"
 #include "UnityEngine/Quaternion.hpp"
 
-#include "IFImage.hpp"
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -55,6 +54,7 @@ DECLARE_JSON_STRUCT(ImageConfig) {
     NAMED_VALUE(ConfigUtils::Vector3, Position, "Position");
     NAMED_VALUE(ConfigUtils::Quaternion, Rotation, "Rotation");
     NAMED_VALUE_OPTIONAL(std::string, Name, "Name");
+    // *** LocalFilePath is the relative path to the image file in the Images folder.
     NAMED_VALUE_OPTIONAL(std::string, LocalFilePath, "LocalFilePath");
 
     NAMED_VALUE(PresentationOptions, Presentation, "Presentation");

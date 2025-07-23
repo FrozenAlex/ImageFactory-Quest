@@ -1,5 +1,3 @@
-#include "main.hpp"
-
 #include "Utils/StringUtils.hpp"
 #include "Presenters/PresenterManager.hpp"
 #include "Presenters/LastNotePresenter.hpp"
@@ -12,6 +10,8 @@
 #include "GlobalNamespace/NoteController.hpp"
 #include "logging.hpp"
 #include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
+#include "beatsaber-hook/shared/utils/hooking.hpp"
+#include "Hooks.hpp"
 
 #define StartCoroutine(method) BSML::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::CoroutineHelper::New(method))
 

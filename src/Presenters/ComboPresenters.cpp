@@ -1,5 +1,3 @@
-#include "main.hpp"
-
 #include "Presenters/PresenterManager.hpp"
 #include "Utils/StringUtils.hpp"
 #include "Presenters/ComboPresenters.hpp"
@@ -7,6 +5,9 @@
 #include "System/Action_1.hpp"
 #include "GlobalNamespace/ComboController.hpp"
 #include "logging.hpp"
+#include "beatsaber-hook/shared/utils/hooking.hpp"
+#include "Hooks.hpp"
+using namespace GlobalNamespace;
 
 namespace ImageFactory::Presenters {
 
