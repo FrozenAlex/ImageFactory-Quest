@@ -6,13 +6,11 @@
 #include "UI/Cells/NewImageViewCell.hpp"
 #include "logging.hpp"
 
-
-std::string const ReuseIdentifier = "REUSENewImageViewCell";
-
 namespace ImageFactory::UI::Cells {
     class NewImageViewTableData {
        public:
         static NewImageViewCell* GetCell(HMUI::TableView* tableView) {
+            std::string const ReuseIdentifier = "REUSENewImageViewCell";
             auto tableCell = tableView->DequeueReusableCellForIdentifier(ReuseIdentifier);
             if (!tableCell) {
                 tableCell = UnityEngine::GameObject::New_ctor("NewImageViewCell")->AddComponent<NewImageViewCell*>();
