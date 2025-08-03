@@ -39,7 +39,8 @@ else()
 endif()
 
 # Hot reload (for development only)
-add_compile_options(-DHotReload)
+# It crashes the list with images cause it recreates the list every time
+# add_compile_options(-DHotReload)
 
 # Targets
 if(QUEST)

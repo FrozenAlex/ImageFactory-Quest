@@ -17,6 +17,9 @@
 #include "UnityEngine/UI/HorizontalOrVerticalLayoutGroup.hpp"
 #include "HMUI/CurvedTextMeshPro.hpp"
 #include "Models/IFSourceImage.hpp"
+#include "bsml/shared/BSML/Components/ClickableImage.hpp"
+#include "bsml/shared/BSML/Components/ModalView.hpp"
+
 DECLARE_CLASS_CODEGEN_INTERFACES(ImageFactory::UI, NewImageView, HMUI::ViewController, HMUI::TableView::IDataSource*) {
 
     DECLARE_OVERRIDE_METHOD_MATCH(void, DidActivate, &HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHeirarchy, bool screenSystemDisabling);
@@ -33,15 +36,28 @@ DECLARE_CLASS_CODEGEN_INTERFACES(ImageFactory::UI, NewImageView, HMUI::ViewContr
     DECLARE_OVERRIDE_METHOD_MATCH(int, NumberOfCells, &HMUI::TableView::IDataSource::NumberOfCells);
     DECLARE_INSTANCE_METHOD(void, PageUp);
     DECLARE_INSTANCE_METHOD(void, PageDown);
+    DECLARE_INSTANCE_METHOD(void, CancelCreationClicked);
+    DECLARE_INSTANCE_METHOD(void, CreateClicked);
+
+    DECLARE_INSTANCE_FIELD(UnityW<BSML::ModalView>, imageDetailsModal);
+    DECLARE_INSTANCE_FIELD(UnityW<HMUI::ImageView>, preview);
+
+    DECLARE_INSTANCE_FIELD(UnityW<HMUI::CurvedTextMeshPro>, animText);
+    DECLARE_INSTANCE_FIELD(UnityW<HMUI::CurvedTextMeshPro>, widthText);
+    DECLARE_INSTANCE_FIELD(UnityW<HMUI::CurvedTextMeshPro>, heightText);
+    DECLARE_INSTANCE_FIELD(UnityW<HMUI::CurvedTextMeshPro>, fileSizeText);
+    DECLARE_INSTANCE_FIELD(UnityW<HMUI::CurvedTextMeshPro>, loadTimeText);
 
     #ifdef HotReload
     DECLARE_INSTANCE_FIELD(BSML::HotReloadFileWatcher*, fileWatcher);
     #endif
-
+    public: 
+        void SelectImage(std::shared_ptr<ImageFactory::Models::IFSourceImage> image);
     private:
         UnityW<HMUI::TableView> imagesTable() {if(imageTableData) {return imageTableData->tableView;} else return nullptr;}
         custom_types::Helpers::Coroutine SetupListElements();
         
+        void ToggleModal(bool enable);
         std::vector<std::shared_ptr<ImageFactory::Models::IFSourceImage>> imagesList;
         std::optional<std::shared_ptr<ImageFactory::Models::IFSourceImage>> selectedImage;
 };

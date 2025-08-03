@@ -28,7 +28,6 @@ DECLARE_CLASS_CODEGEN(ImageFactory::UI::Cells, NewImageViewCell, HMUI::TableCell
     DECLARE_INSTANCE_METHOD(void, OnDestroy);
 public:
     bool needsImageLoad = false;
-    custom_types::Helpers::Coroutine LoadImageDate();
     std::optional<std::shared_ptr<ImageFactory::Models::IFSourceImage>> imageData;
     NewImageViewCell* PopulateWithImageData(std::shared_ptr<ImageFactory::Models::IFSourceImage> image);
 };

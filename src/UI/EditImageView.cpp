@@ -73,7 +73,7 @@ namespace ImageFactory::UI {
             SetPreferredSize(horiz, 94, 8);
 
             BSML::Lite::CreateStringSetting(horiz->get_transform(), "Name", image->name,
-                [=](StringW s) { 
+                [this](StringW s) { 
                     image->name = static_cast<std::string>(s);
             });
 
@@ -83,19 +83,19 @@ namespace ImageFactory::UI {
             SetWidth(horiz, 90);
             
             BSML::Lite::CreateToggle(settingsVert->get_transform(), "Enabled", image->enabled, 
-                [=](bool b) {
+                [this](bool b) {
                     image->enabled = b;
                     image->UpdateImage(true);
             });
 
             BSML::Lite::CreateIncrementSetting(settingsVert->get_transform(), "Scale X", 2, 0.1f, image->scale.x,
-                [=](float f) {
+                [this](float f) {
                     image->scale.x = f;
                     image->UpdateImage(true);
             });
 
             BSML::Lite::CreateIncrementSetting(settingsVert->get_transform(), "Scale Y", 2, 0.1f, image->scale.y,
-                [=](float f) {
+                [this](float f) {
                     image->scale.y = f;
                     image->UpdateImage(true);
             });

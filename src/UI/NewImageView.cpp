@@ -69,6 +69,56 @@ namespace ImageFactory::UI {
             imageTableData->tableView->SetDataSource(reinterpret_cast<HMUI::TableView::IDataSource*>(this), false);
             imageTableData->tableView->ReloadData();
         }
+
+        if (selectedImage) {
+            ToggleModal(true);
+        }
+    }
+
+    void NewImageView::CancelCreationClicked() {
+        ToggleModal(false);
+    }
+
+    void NewImageView::CreateClicked() {
+        // Do stuff with create
+    }
+
+    void NewImageView::ToggleModal(bool enable) {
+        if (!enable) {
+            imageDetailsModal->Hide();
+            selectedImage = std::nullopt;
+            return;
+        }
+        if (!selectedImage) {
+            DEBUG("No image selected, cannot toggle modal on.");
+            return;
+        }
+        auto imageConfig = selectedImage.value();
+        animText->set_text(fmt::format("Animated: {}", imageConfig->animated? "Yes": "No"));
+        
+        auto bsmlPath = imageConfig->path;
+
+        if (!bsmlPath.starts_with("file://")) {
+            bsmlPath = "file://" + bsmlPath; // Ensure the path is a valid file URL
+        }
+        auto fileSize = std::filesystem::file_size(imageConfig->path);
+        fileSizeText->set_text(fmt::format("File Size: {} {}",
+            StringUtils::removeTrailingZeros(round(fileSize / FileUtils::FileSizeDivisor(fileSize))),
+            FileUtils::FileSizeExtension(fileSize)));
+
+
+        Utilities::SetImage(preview, bsmlPath, true, Utilities::ScaleOptions(), [this]() {
+            DEBUG("Image preview set successfully.");
+            if (!preview || !preview->get_sprite()) {
+                ERROR("Preview image is null, cannot get stats");
+                return;
+            }
+            auto sprite = preview->get_sprite();
+
+            widthText->set_text(fmt::format("Width: {}px", StringUtils::removeTrailingZeros(ceil(sprite->get_textureRect().get_width()))));
+            heightText->set_text(fmt::format("Height: {}px", StringUtils::removeTrailingZeros(ceil(sprite->get_textureRect().get_height()))));
+        });
+        imageDetailsModal->Show();
     }
 
     float NewImageView::CellSize() {
@@ -99,6 +149,12 @@ namespace ImageFactory::UI {
         if (imageTableData && imageTableData->tableView) {
             imageTableData->tableView->get_scrollView()->PageDownButtonPressed();
         }
+    }
+
+    void NewImageView::SelectImage(std::shared_ptr<ImageFactory::Models::IFSourceImage> image) {
+        selectedImage = image;
+
+        ToggleModal(true);
     }
 
     custom_types::Helpers::Coroutine NewImageView::SetupListElements(){

@@ -1,4 +1,5 @@
 #include "UI/Cells/NewImageViewCell.hpp"
+#include "UI/NewImageView.hpp"
 #include "bsml/shared/Helpers/utilities.hpp"
 #include "logging.hpp"
 #include "assets.hpp"
@@ -12,6 +13,7 @@
 #include "Utils/UIUtils.hpp"
 #include "UnityEngine/WaitForEndOfFrame.hpp"
 #include "UnityEngine/WaitForSeconds.hpp"
+#include "UI/NewImageView.hpp"
 
 DEFINE_TYPE(ImageFactory::UI::Cells, NewImageViewCell);
 
@@ -30,6 +32,18 @@ void ImageFactory::UI::Cells::NewImageViewCell::WasPreparedForReuse() {
 void ImageFactory::UI::Cells::NewImageViewCell::ClickedCreateButton() {
     // This is where the logic for creating a new image would go.
     // For now, we can just log that the button was clicked.
+    UnityW<ImageFactory::UI::NewImageView> parent = GetComponentInParent<ImageFactory::UI::NewImageView*>();
+    if (!parent) {
+        WARNING("Somehow the new image view does not exist so not doing anything");
+        return;
+    }
+    
+    if (!imageData) {
+        WARNING("Image data is not set, avoiding crash");
+        return;
+    }
+    DEBUG("Setting the current image");
+    parent->SelectImage(imageData.value());
 }
 
 void ImageFactory::UI::Cells::NewImageViewCell::OnEnable() {
@@ -39,47 +53,22 @@ void ImageFactory::UI::Cells::NewImageViewCell::OnEnable() {
 }
 
 void ImageFactory::UI::Cells::NewImageViewCell::OnDestroy() {
-    DEBUG("NewImageViewCell::OnDestroy called");
-}
-
-custom_types::Helpers::Coroutine ImageFactory::UI::Cells::NewImageViewCell::LoadImageDate() {
-    DEBUG("Cell addr in coro, {}", fmt::ptr(this));
-co_yield reinterpret_cast<System::Collections::IEnumerator*>(UnityEngine::WaitForSeconds::New_ctor(4.0f));
-    DEBUG("Cell addr in coro, {}", fmt::ptr(this));
-    if (needsImageLoad) {
-        DEBUG("1");
-        if (this->fileName) {
-            DEBUG("Filename exists");
-        } else {
-            DEBUG("Filename doesn't exist");
-        }
-        this->fileName->set_text(imageData.value()->fileName);
-        DEBUG("1");
-        auto bsmlPath = imageData.value()->path;
-        DEBUG("1");
-        if (!bsmlPath.starts_with("file://")) {
-            bsmlPath = "file://" + bsmlPath; // Ensure the path is a valid file URL
-        }
-        DEBUG("1");
-        // if (this->preview) {
-        //     DEBUG("1");
-        //     BSML::Utilities::SetImage(this->preview,  bsmlPath);
-        //     DEBUG("1");
-        // } else {
-        //     DEBUG("Preview is null. Cannot set image.");
-        // }
-        needsImageLoad = false; // Reset the flag after loading the image
-    }
-    co_return; // End the coroutine
+    DEBUG("NewImageViewCell::OnDestroy called on {}", fmt::ptr(this));
+    Logger.Backtrace(100);
 }
 
 
 ImageFactory::UI::Cells::NewImageViewCell* ImageFactory::UI::Cells::NewImageViewCell::PopulateWithImageData(std::shared_ptr<ImageFactory::Models::IFSourceImage> image) {
-    DEBUG("PopulateWithImageData");
-    DEBUG("Cell addr before coro, {}", fmt::ptr(this));
-    auto starter = BSML::SharedCoroutineStarter::get_instance();
-    starter->StartCoroutine(custom_types::Helpers::new_coro(this->LoadImageDate()));
     imageData = image; // Store the image data for later use
-    needsImageLoad = true; // Indicate that the image needs to be loaded
+
+    this->fileName->set_text(imageData.value()->fileName);
+    auto bsmlPath = imageData.value()->path;
+
+    if (!bsmlPath.starts_with("file://")) {
+        bsmlPath = "file://" + bsmlPath; // Ensure the path is a valid file URL
+    }
+    if (this->preview) {
+        BSML::Utilities::SetImage(this->preview,  bsmlPath);
+    }
     return this;
 };
