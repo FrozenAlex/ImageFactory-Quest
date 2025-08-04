@@ -2,11 +2,7 @@
 
 #include "IFImage.hpp"
 #include "UnityEngine/GameObject.hpp"
-#include "PluginConfig.hpp"
 
-
-using namespace std;
-using namespace UnityEngine;
 
 DECLARE_CLASS_CODEGEN(ImageFactory, ImageManager, UnityEngine::MonoBehaviour) {
     DECLARE_INSTANCE_METHOD(void, AddNewImage, UnityW<IFImage>);
@@ -17,7 +13,7 @@ DECLARE_CLASS_CODEGEN(ImageFactory, ImageManager, UnityEngine::MonoBehaviour) {
 
 
     DECLARE_INSTANCE_FIELD(ListW<UnityW<IFImage>>, images);
-    DECLARE_INSTANCE_FIELD(UnityW<GameObject>, go);
+    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::GameObject>, go);
 
     public:
         static UnityW<ImageManager> get_instance();

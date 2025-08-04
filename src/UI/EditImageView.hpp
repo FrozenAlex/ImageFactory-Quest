@@ -4,7 +4,6 @@
 #include "Presenters/Presenter.hpp"
 #include "HMUI/ViewController.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
-#include "UnityEngine/Coroutine.hpp"
 #include "custom-types/shared/coroutine.hpp"
 #include "custom-types/shared/macros.hpp"
 #include "bsml/shared/BSML/Components/HotReloadFileWatcher.hpp"

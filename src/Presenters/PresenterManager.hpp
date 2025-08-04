@@ -5,7 +5,6 @@
 #include "custom-types/shared/coroutine.hpp"
 #include "Presenter.hpp"
 
-#include <map>
 #include <vector>
 
 namespace ImageFactory {

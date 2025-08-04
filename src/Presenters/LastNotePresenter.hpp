@@ -5,6 +5,6 @@
 namespace ImageFactory::Presenters {
     class LastNotePresenter : public Presenter {
         public:
-            std::vector<GameObject*> GetUIElements(Transform* parent, IFImage* image) override;
+            std::vector<UnityEngine::GameObject*> GetUIElements(UnityEngine::Transform* parent, IFImage* image) override;
     };
 }

@@ -1,17 +1,17 @@
 #include "UI/EditImageView.hpp"
 
 #include "UI/ImageFactoryFlowCoordinator.hpp"
-#include "Utils/UIUtils.hpp"
 #include "Presenters/PresenterManager.hpp"
-#include "HMUI/CurvedCanvasSettingsHelper.hpp"
 #include "HMUI/Touchable.hpp"
 #include "UnityEngine/Rect.hpp"
 #include "UnityEngine/RectOffset.hpp"
 #include "UnityEngine/Graphics.hpp"
 #include "UnityEngine/UI/ContentSizeFitter.hpp"
 #include "ImageManager.hpp"
+#include "bsml/shared/BSML.hpp"
 #include "logging.hpp"
 #include "assets.hpp"
+
 
 
 using namespace UnityEngine::UI;
@@ -107,11 +107,11 @@ namespace ImageFactory::UI {
             SetFits(optionsVert, ContentSizeFitter::FitMode::PreferredSize, ContentSizeFitter::FitMode::PreferredSize);
             SetPreferredSize(optionsVert, 90, 34);
 
-            Backgroundable* bg = optionsVert->get_gameObject()->AddComponent<Backgroundable*>();
+            BSML::Backgroundable* bg = optionsVert->get_gameObject()->AddComponent<BSML::Backgroundable*>();
             bg->ApplyBackground("round-rect-panel");
             bg->ApplyAlpha(0.8f);
 
-            std::vector<string_view> presOptions;
+            std::vector<std::string_view> presOptions;
 
             for (int i = 0; i < PresenterManager::PRESENTERS.size(); i++) {
                 presOptions.push_back(PresenterManager::PRESENTERS.at(i));

@@ -1,19 +1,13 @@
 #include "UI/SavedImageView.hpp"
 
 #include "ConfigManager.hpp"
-#include "bsml/shared/BSML/Animations/AnimationStateUpdater.hpp"
 #include "UI/ImageFactoryFlowCoordinator.hpp"
 #include "Utils/UIUtils.hpp"
 #include "Utils/FileUtils.hpp"
-#include "HMUI/Touchable.hpp"
 #include "Presenters/PresenterManager.hpp"
 #include "UnityEngine/Resources.hpp"
-#include "UnityEngine/WaitForSeconds.hpp"
-#include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
-#include "beatsaber-hook/shared/utils/il2cpp-functions.hpp"
 #include "beatsaber-hook/shared/utils/typedefs-string.hpp"
 #include "HMUI/ViewController.hpp"
-#include "PluginConfig.hpp"
 #include "bsml/shared/BSML-Lite/Creation/Text.hpp"
 #include "bsml/shared/BSML-Lite/Creation/Image.hpp"
 #include "bsml/shared/BSML-Lite/Creation/Layout.hpp"
@@ -23,6 +17,7 @@
 #include "UnityEngine/WaitForEndOfFrame.hpp"
 #include "HMUI/ScrollView.hpp"
 #include "UI/Cells/SavedImageViewTableData.hpp"
+
 DEFINE_TYPE(ImageFactory::UI, SavedImageView);
 
 using namespace GlobalNamespace;

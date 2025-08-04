@@ -4,25 +4,18 @@
 
 #include "assets.hpp"
 #include "ConfigManager.hpp"
-#include "HMUI/Touchable.hpp"
 #include "IFImage.hpp"
 #include "ImageManager.hpp"
 #include "PluginConfig.hpp"
 #include "Presenters/PresenterManager.hpp"
-#include "UnityEngine/Application.hpp"
-#include "UnityEngine/Vector2.hpp"
-#include "Utils/UIUtils.hpp"
+#include "bsml/shared/BSML.hpp"
 #include "logging.hpp"
 
 DEFINE_TYPE(ImageFactory::UI, InfoView);
 
 using namespace UnityEngine::UI;
 using namespace UnityEngine;
-using namespace UIUtils;
 using namespace HMUI;
-
-
-
 
 
 namespace ImageFactory::UI {

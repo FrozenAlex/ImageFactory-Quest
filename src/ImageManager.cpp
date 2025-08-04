@@ -12,9 +12,10 @@
 #include "UnityEngine/TextureFormat.hpp"
 #include <fstream>
 #include "ConfigManager.hpp"
-
+#include "Utils/UIUtils.hpp"
 DEFINE_TYPE(ImageFactory, ImageManager);
 
+using namespace UnityEngine;
 
 custom_types::Helpers::Coroutine ImageFactory::ImageManager::LoadImages() {
     // Parse images and Loop through each image
@@ -39,7 +40,7 @@ custom_types::Helpers::Coroutine ImageFactory::ImageManager::LoadImages() {
         // Check if the file exists, if not, continue to the next.
         auto fullFilePath = IMAGE_FACTORY_IMAGES_PATH + imageConfig->LocalFilePath.value();
 
-        fstream f(fullFilePath);
+        std::fstream f(fullFilePath);
 
         // This should never happen tho...
         if (!f.good()) {

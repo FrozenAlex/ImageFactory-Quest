@@ -5,13 +5,7 @@
 #include "UnityEngine/Vector3.hpp"
 #include "UnityEngine/Rect.hpp"
 #include "UnityEngine/Bounds.hpp"
-#include "Tweening/FloatTween.hpp"
-#include "custom-types/shared/delegate.hpp"
 #include "bsml/shared/Helpers/utilities.hpp"
-#include "System/Action.hpp"
-#include "System/Action_1.hpp"
-#include "GlobalNamespace/EaseType.hpp"
-#include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
 
 #include "EasyGifReader.h"
 

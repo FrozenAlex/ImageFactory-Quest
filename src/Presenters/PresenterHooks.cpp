@@ -1,5 +1,4 @@
 #include "Presenters/PresenterManager.hpp"
-#include "GlobalNamespace/MainMenuViewController.hpp"
 #include "GlobalNamespace/ResultsViewController.hpp"
 #include "GlobalNamespace/AudioTimeSyncController.hpp"
 #include "GlobalNamespace/StandardLevelScenesTransitionSetupDataSO.hpp"
@@ -7,6 +6,7 @@
 #include "GlobalNamespace/PauseMenuManager.hpp"
 #include "logging.hpp"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
+#include "Utils/UIUtils.hpp"
 #include "Hooks.hpp"
 using namespace GlobalNamespace;
 

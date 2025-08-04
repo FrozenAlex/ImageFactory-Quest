@@ -2,11 +2,8 @@
 
 #include <memory>
 #include "HMUI/ImageView.hpp"
-#include "HMUI/Touchable.hpp"
-#include "System/TimeSpan.hpp"
 #include "UnityEngine/Collider.hpp"
 #include "UnityEngine/GameObject.hpp"
-#include "UnityEngine/MeshRenderer.hpp"
 #include "UnityEngine/MonoBehaviour.hpp"
 #include "UnityEngine/Quaternion.hpp"
 #include "UnityEngine/Sprite.hpp"
@@ -19,14 +16,9 @@
 #include "VRUIControls/VRPointer.hpp"
 #include "custom-types/shared/coroutine.hpp"
 #include "custom-types/shared/macros.hpp"
-#include "custom-types/shared/types.hpp"
 #include "bsml/shared/BSML/FloatingScreen/FloatingScreen.hpp"
-#include "bsml/shared/BSML.hpp"
-#include "Tweening/TimeTweeningManager.hpp"
 #include "PluginConfig.hpp"
 
-using namespace std;
-using namespace UnityEngine;
 
 DECLARE_CLASS_CODEGEN(ImageFactory, IFImage, UnityEngine::MonoBehaviour) {
     DECLARE_INSTANCE_METHOD(void, Create);
@@ -34,35 +26,35 @@ DECLARE_CLASS_CODEGEN(ImageFactory, IFImage, UnityEngine::MonoBehaviour) {
     DECLARE_INSTANCE_METHOD(void, Despawn, bool);
     DECLARE_INSTANCE_METHOD(void, UpdateImage, bool); 
     DECLARE_INSTANCE_METHOD(void, Destroy); 
-    DECLARE_INSTANCE_METHOD(Vector2, get_size);
+    DECLARE_INSTANCE_METHOD(UnityEngine::Vector2, get_size);
     DECLARE_INSTANCE_METHOD(void, set_size, UnityEngine::Vector2); 
-    DECLARE_INSTANCE_METHOD(Vector3, get_position);
+    DECLARE_INSTANCE_METHOD(UnityEngine::Vector3, get_position);
     DECLARE_INSTANCE_METHOD(void, set_position, UnityEngine::Vector3);
-    DECLARE_INSTANCE_METHOD(Quaternion, get_rotation);
+    DECLARE_INSTANCE_METHOD(UnityEngine::Quaternion, get_rotation);
     DECLARE_INSTANCE_METHOD(void, set_rotation, UnityEngine::Quaternion);
     DECLARE_INSTANCE_FIELD(float, width);
     DECLARE_INSTANCE_FIELD(float, height);
-    DECLARE_INSTANCE_FIELD(Vector3, position);
-    DECLARE_INSTANCE_FIELD(Quaternion, rotation);
-    DECLARE_INSTANCE_FIELD(Vector2, scale);
+    DECLARE_INSTANCE_FIELD(UnityEngine::Vector3, position);
+    DECLARE_INSTANCE_FIELD(UnityEngine::Quaternion, rotation);
+    DECLARE_INSTANCE_FIELD(UnityEngine::Vector2, scale);
     DECLARE_INSTANCE_FIELD(bool, hasBeenCreated);
     DECLARE_INSTANCE_FIELD(bool, inSong);
     DECLARE_INSTANCE_FIELD(bool, canAnimate);
     DECLARE_INSTANCE_FIELD(bool, isAnimated);
-    DECLARE_INSTANCE_FIELD(UnityW<SpriteRenderer>, spriteRenderer);
+    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::SpriteRenderer>, spriteRenderer);
     DECLARE_INSTANCE_FIELD(UnityW<HMUI::ImageView>, image);
     DECLARE_INSTANCE_FIELD(UnityW<HMUI::ImageView>, inSongImage);
-    DECLARE_INSTANCE_FIELD(UnityW<Sprite>, sprite);
+    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::Sprite>, sprite);
     DECLARE_INSTANCE_FIELD(UnityW<BSML::FloatingScreen>, screen);
-    DECLARE_INSTANCE_FIELD(UnityW<GameObject>, screenGO);
-    DECLARE_INSTANCE_FIELD(UnityW<GameObject>, inSongScreen);
-    DECLARE_CTOR(ctor, UnityW<Sprite> sprite, StringW path);
+    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::GameObject>, screenGO);
+    DECLARE_INSTANCE_FIELD(UnityW<UnityEngine::GameObject>, inSongScreen);
+    DECLARE_CTOR(ctor, UnityW<UnityEngine::Sprite> sprite, StringW path);
     
     public:
         /**
         * @brief Link to the image config.
         */
-        std::optional<shared_ptr<ImageConfig>> config;
+        std::optional<std::shared_ptr<ImageConfig>> config;
 
         std::string name;
         std::unordered_map<std::string, std::string>* extraData;

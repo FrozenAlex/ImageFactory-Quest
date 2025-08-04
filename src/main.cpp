@@ -1,12 +1,13 @@
 #include "main.hpp"
 
-#include "IFImage.hpp"
 #include "PluginConfig.hpp"
 #include "UI/ImageFactoryFlowCoordinator.hpp"
 #include "logging.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "logging.hpp"
 #include "Hooks.hpp"
+#include "beatsaber-hook/shared/utils/il2cpp-functions.hpp"
+
 using namespace ImageFactory;
 
 void makeFolders() {

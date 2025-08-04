@@ -1,28 +1,15 @@
 #include "UI/NewImageView.hpp"
-#include "UI/ImageFactoryFlowCoordinator.hpp"
 #include "assets.hpp"
 #include "logging.hpp"
-#include "Utils/UIUtils.hpp"
 #include "Utils/FileUtils.hpp"
 #include "Utils/StringUtils.hpp"
-#include "HMUI/Touchable.hpp"
 #include "System/IO/FileStream.hpp"
 #include "System/IO/FileMode.hpp"
-#include "System/Diagnostics/Stopwatch.hpp"
 #include "UnityEngine/Rect.hpp"
-#include "UnityEngine/Resources.hpp"
-#include "UnityEngine/WaitForSeconds.hpp"
-#include "UnityEngine/HideFlags.hpp"
-#include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
-#include "bsml/shared/BSML/MainThreadScheduler.hpp"
-#include "bsml/shared/BSML-Lite/Creation/Text.hpp"
-#include "bsml/shared/BSML-Lite/Creation/Image.hpp"
-#include "bsml/shared/BSML-Lite/Creation/Buttons.hpp"
-#include "bsml/shared/BSML-Lite/Creation/Layout.hpp"
-#include "custom-types/shared/delegate.hpp"
 #include "bsml/shared/Helpers/utilities.hpp"
 #include "HMUI/ScrollView.hpp"
 #include "UI/Cells/NewImageViewTableData.hpp"
+#include "bsml/shared/BSML.hpp"
 
 DEFINE_TYPE(ImageFactory::UI, NewImageView);
 
@@ -107,7 +94,7 @@ namespace ImageFactory::UI {
             FileUtils::FileSizeExtension(fileSize)));
 
 
-        Utilities::SetImage(preview, bsmlPath, true, Utilities::ScaleOptions(), [this]() {
+        BSML::Utilities::SetImage(preview, bsmlPath, true, BSML::Utilities::ScaleOptions(), [this]() {
             DEBUG("Image preview set successfully.");
             if (!preview || !preview->get_sprite()) {
                 ERROR("Preview image is null, cannot get stats");

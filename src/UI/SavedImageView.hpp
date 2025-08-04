@@ -8,11 +8,13 @@
 #include "custom-types/shared/coroutine.hpp"
 #include "GlobalNamespace/LoadingControl.hpp"
 #include "IFImage.hpp"
-#include "PluginConfig.hpp"
-#include "bsml/shared/BSML/Components/HotReloadFileWatcher.hpp"
 #include "bsml/shared/BSML/Components/CustomListTableData.hpp"
 #include "HMUI/TableView.hpp"
 #include "UnityEngine/UI/HorizontalOrVerticalLayoutGroup.hpp"
+
+#ifdef HotReload
+#include "bsml/shared/BSML/Components/HotReloadFileWatcher.hpp"
+#endif
 
 DECLARE_CLASS_CODEGEN_INTERFACES(ImageFactory::UI, SavedImageView, HMUI::ViewController, HMUI::TableView::IDataSource*) {
     #ifdef HotReload

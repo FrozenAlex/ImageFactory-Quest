@@ -4,7 +4,9 @@
 #include "logging.hpp"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
 #include "Hooks.hpp"
+
 using namespace GlobalNamespace;
+using namespace UnityEngine;
 
 namespace ImageFactory {
     MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &MenuTransitionsHelper::RestartGame, void, MenuTransitionsHelper* self, System::Action_1<Zenject::DiContainer *> *finishCallback) {

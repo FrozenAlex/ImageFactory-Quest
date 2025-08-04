@@ -1,12 +1,8 @@
 #include "Utils/StringUtils.hpp" 
 
 
-#include <iostream>
 #include <vector>
-#include <algorithm>
 #include <sstream>
-#include <iterator>
-
 namespace StringUtils {
 
     std::string removeTrailingZeros(int i) {

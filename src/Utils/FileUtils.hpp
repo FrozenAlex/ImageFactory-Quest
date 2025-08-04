@@ -3,7 +3,6 @@
 #include <string>
 
 #include "custom-types/shared/macros.hpp"
-#include "custom-types/shared/types.hpp"
 #include "System/IO/FileStream.hpp"
 
 namespace FileUtils {

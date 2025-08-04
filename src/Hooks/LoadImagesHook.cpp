@@ -1,4 +1,3 @@
-#include "Presenters/PresenterManager.hpp"
 #include "GlobalNamespace/MainMenuViewController.hpp"
 #include "logging.hpp"
 #include "ImageManager.hpp"

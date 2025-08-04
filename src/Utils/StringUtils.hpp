@@ -1,6 +1,7 @@
 #pragma once
 
-#include "beatsaber-hook/shared/utils/typedefs-string.hpp"
+#include <string>
+#include <vector>
 
 namespace StringUtils {
     std::string removeTrailingZeros(int s);

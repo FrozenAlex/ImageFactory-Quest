@@ -1,7 +1,5 @@
 #pragma once
 #include "PluginConfig.hpp"
-#include <vector>
-#include <string>
 #include "IFImage.hpp"
 
 namespace ImageFactory::Config {

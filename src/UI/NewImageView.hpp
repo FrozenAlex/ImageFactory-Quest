@@ -1,24 +1,23 @@
 #pragma once
 
 #include "HMUI/ViewController.hpp"
-#include "UnityEngine/Transform.hpp"
 #include "custom-types/shared/macros.hpp"
 #include "custom-types/shared/coroutine.hpp"
 
-#include "GlobalNamespace/LoadingControl.hpp"
 #include "HMUI/ImageView.hpp"
-#include <list>
-#include <map>
 #include <memory>
 #include <optional>
 #include <vector>
-#include "bsml/shared/BSML/Components/HotReloadFileWatcher.hpp"
+
 #include "bsml/shared/BSML/Components/CustomListTableData.hpp"
 #include "UnityEngine/UI/HorizontalOrVerticalLayoutGroup.hpp"
 #include "HMUI/CurvedTextMeshPro.hpp"
 #include "Models/IFSourceImage.hpp"
-#include "bsml/shared/BSML/Components/ClickableImage.hpp"
 #include "bsml/shared/BSML/Components/ModalView.hpp"
+
+#ifdef HotReload
+#include "bsml/shared/BSML/Components/HotReloadFileWatcher.hpp"
+#endif
 
 DECLARE_CLASS_CODEGEN_INTERFACES(ImageFactory::UI, NewImageView, HMUI::ViewController, HMUI::TableView::IDataSource*) {
 

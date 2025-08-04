@@ -8,7 +8,11 @@
 #include "GlobalNamespace/ScoreController.hpp"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
 #include "Hooks.hpp"
+#include "Utils/UIUtils.hpp"
+#include "custom-types/shared/delegate.hpp"
 using namespace GlobalNamespace;
+
+using namespace UnityEngine;
 namespace ImageFactory::Presenters {
     std::vector<std::string_view> dropdownOptions = {
         "Below", "Above"

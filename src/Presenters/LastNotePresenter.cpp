@@ -1,20 +1,22 @@
-#include "Utils/StringUtils.hpp"
+
 #include "Presenters/PresenterManager.hpp"
 #include "Presenters/LastNotePresenter.hpp"
 #include "GlobalNamespace/StandardLevelDetailView.hpp"
-#include "GlobalNamespace/BeatmapData.hpp"
 #include "GlobalNamespace/BeatmapBasicData.hpp"
 #include "GlobalNamespace/BeatmapLevel.hpp"
 #include "GlobalNamespace/NoteData.hpp"
-#include "System/Threading/Tasks/Task_1.hpp"
+
 #include "GlobalNamespace/NoteController.hpp"
 #include "logging.hpp"
 #include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
 #include "Hooks.hpp"
+#include "Utils/UIUtils.hpp"
 
 #define StartCoroutine(method) BSML::SharedCoroutineStarter::get_instance()->StartCoroutine(custom_types::Helpers::CoroutineHelper::New(method))
 
+using namespace UnityEngine;
+using namespace GlobalNamespace;
 namespace ImageFactory::Presenters {
 
     std::vector<GameObject*> LastNotePresenter::GetUIElements(Transform* parent, IFImage* image) {

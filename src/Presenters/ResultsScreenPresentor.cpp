@@ -3,14 +3,12 @@
 #include "GlobalNamespace/ResultsViewController.hpp"
 #include "GlobalNamespace/LevelCompletionResults.hpp"
 #include "logging.hpp"
-#include "bsml/shared/BSML-Lite/Creation/Layout.hpp"
 #include "GlobalNamespace/ResultsViewController.hpp"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
 #include "Hooks.hpp"
 
 using namespace GlobalNamespace;
-
-
+using namespace UnityEngine;
 
 namespace ImageFactory::Presenters {
 

@@ -2,17 +2,6 @@
 #include "UI/NewImageView.hpp"
 #include "bsml/shared/Helpers/utilities.hpp"
 #include "logging.hpp"
-#include "assets.hpp"
-#include "custom-types/shared/coroutine.hpp"
-#include "bsml/shared/BSML-Lite/Creation/Text.hpp"
-#include "bsml/shared/BSML-Lite/Creation/Image.hpp"
-#include "bsml/shared/BSML-Lite/Creation/Buttons.hpp"
-#include "bsml/shared/BSML-Lite/Creation/Layout.hpp"
-#include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
-#include "bsml/shared/BSML/MainThreadScheduler.hpp"
-#include "Utils/UIUtils.hpp"
-#include "UnityEngine/WaitForEndOfFrame.hpp"
-#include "UnityEngine/WaitForSeconds.hpp"
 #include "UI/NewImageView.hpp"
 
 DEFINE_TYPE(ImageFactory::UI::Cells, NewImageViewCell);

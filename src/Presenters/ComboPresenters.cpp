@@ -1,12 +1,17 @@
+#include "Presenters/ComboPresenters.hpp"
 #include "Presenters/PresenterManager.hpp"
 #include "Utils/StringUtils.hpp"
-#include "Presenters/ComboPresenters.hpp"
 #include "System/Action.hpp"
 #include "System/Action_1.hpp"
 #include "GlobalNamespace/ComboController.hpp"
 #include "logging.hpp"
 #include "beatsaber-hook/shared/utils/hooking.hpp"
 #include "Hooks.hpp"
+#include "Utils/UIUtils.hpp"
+#include "bsml/shared/BSML/SharedCoroutineStarter.hpp"
+#include "custom-types/shared/delegate.hpp"
+
+using namespace UnityEngine;
 using namespace GlobalNamespace;
 
 namespace ImageFactory::Presenters {
